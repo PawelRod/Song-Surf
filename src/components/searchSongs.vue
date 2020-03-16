@@ -11,10 +11,10 @@
 </template>
 
 <script>
+
 export default {
   name: 'searchSongs',
   props: {
-    msg: String
   },
   data() {
     return {
@@ -27,7 +27,6 @@ export default {
     showItems: function() {
       const token = 'e6BVaO8SJJ0-FYN8GAcyJUAZO3TCGsbQHzOl99-vfMfjkm57ppuPaqR61gImTbyB';
       this.$http.get('http://api.genius.com/search?access_token=' + token + '&q=' + this.search).then(function(data){
-        // 16067985
         console.log(data);
         this.items = data.body.response.hits.map(function(hit){
           return {
@@ -36,7 +35,10 @@ export default {
             thumbnail: hit.result.header_image_thumbnail_url,
           }
         });
-      })
+      });
+      if(this.search == "") {
+        this.items.slice(10);
+      }
     }
   },
   created() {
