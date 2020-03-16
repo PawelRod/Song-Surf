@@ -1,8 +1,7 @@
 <template>
   <div id="show-items">
     <h1>Songs:</h1>
-    <input v-model="search">
-    <button @click="showItems">Search</button>
+    <input v-model="search" @input="showItems">
     <div v-for="item in items" :key="item.length" class="single-item">
       <p>{{ item.description }}</p>
       <img :src="item.thumbnail">
@@ -28,6 +27,8 @@ export default {
     showItems: function() {
       const token = 'e6BVaO8SJJ0-FYN8GAcyJUAZO3TCGsbQHzOl99-vfMfjkm57ppuPaqR61gImTbyB';
       this.$http.get('http://api.genius.com/search?access_token=' + token + '&q=' + this.search).then(function(data){
+        // 16067985
+        console.log(data);
         this.items = data.body.response.hits.map(function(hit){
           return {
             content: hit.result.url,
@@ -45,6 +46,9 @@ export default {
 </script>
 
 <style scoped>
+  #show-items {
+    text-align: center;
+  }
   .single-item {
     border-bottom: 2px solid black;
   }
