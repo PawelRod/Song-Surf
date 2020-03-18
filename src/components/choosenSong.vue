@@ -1,6 +1,6 @@
 <template>
   <div id="show-item">
-
+    <p>{{ songPath }}</p>
   </div>
 </template>
 
@@ -9,6 +9,7 @@
 export default {
   name: 'choosenSong',
   props: {
+    songPath: String
   },
   data() {
     return {
@@ -16,7 +17,7 @@ export default {
     }
   },
   methods: {
-
+    // .get('http://api.genius.com/songs/3035222?access_token=' + token) (KENDRICK DNA) e.g.
   },
   created() {
 
