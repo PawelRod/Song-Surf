@@ -17,10 +17,13 @@ export default {
     }
   },
   methods: {
-    // .get('http://api.genius.com/songs/3035222?access_token=' + token) (KENDRICK DNA) e.g.
+    
   },
-  created() {
-
+  beforeUpdate() {
+      const token = 'e6BVaO8SJJ0-FYN8GAcyJUAZO3TCGsbQHzOl99-vfMfjkm57ppuPaqR61gImTbyB';
+      this.$http.get('http://api.genius.com' + this.songPath + '?access_token=' + token).then(function(data){
+        console.log(data);
+      })
   }
 }
 </script>

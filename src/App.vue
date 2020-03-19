@@ -31,7 +31,6 @@ export default {
       showItems: function() {
       const token = 'e6BVaO8SJJ0-FYN8GAcyJUAZO3TCGsbQHzOl99-vfMfjkm57ppuPaqR61gImTbyB';
       this.$http.get('http://api.genius.com/search?access_token=' + token + '&q=' + this.search).then(function(data){
-        console.log(data);
         this.items = data.body.response.hits.map(function(hit){
           return {
             content: hit.result.url,
