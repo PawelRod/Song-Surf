@@ -7,7 +7,7 @@
       <img :src="item.thumbnail">
       <a :href="item.content" target="_blank">Show lyrics</a>
     </div>
-    <choosenSong :songPath="songPath" />
+    <choosenSong v-show="show" :songPath="songPath" />
   </div>
 </template>
 
@@ -24,7 +24,8 @@ export default {
       search: '',
       items: [],
       key: 1,
-      songPath: ''
+      songPath: '',
+      show: false
     }
   },
   methods: {
@@ -46,7 +47,7 @@ export default {
     },
     chooseItem: function(item) {
       this.songPath = item.apiPath;
-      console.log(this.songPath);
+      this.show = !this.show;
     }
   }
 }
@@ -67,5 +68,7 @@ export default {
     display: block;
     margin: 10px 0;
   }
-
+  choosenSong {
+    
+  }
 </style>
