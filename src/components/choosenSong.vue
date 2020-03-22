@@ -5,6 +5,7 @@
       :src="myUrl"
       frameborder="0" allowfullscreen>
     </iframe>
+    <a @click="exit">X</a>
   </div>
 </template>
 
@@ -13,7 +14,7 @@
 export default {
   name: 'choosenSong',
   props: {
-    songPath: String
+    songPath: String,
   },
   data() {
     return {
@@ -22,7 +23,9 @@ export default {
     }
   },
   methods: {
-    
+    exit: function() {
+      this.$emit('exit', false);
+    }
   },
   beforeUpdate() {
       const token = 'e6BVaO8SJJ0-FYN8GAcyJUAZO3TCGsbQHzOl99-vfMfjkm57ppuPaqR61gImTbyB';
@@ -31,7 +34,7 @@ export default {
         this.item = data
         let str = this.item.body.response.song.media[0].url;
         let res = str.split("=");
-        this.myUrl = "https://www.youtube.com/embed/" + res[1];
+        this.myUrl = "https://www.youtube.com/embed/" + res[1] + "?autoplay=1";
       })
   }
 }
@@ -39,13 +42,20 @@ export default {
 
 <style scoped>
   #show-item {
-    position: absolute;
+    position: fixed;
+    top: 0;
+    left: 0;
     width: 100%;
-    height: auto;
-    background: black;
+    height: 100%;
+    background: rgba(0, 0, 0, .9);
   }
-  iframe {
-    margin: 0 auto;
+  a {
+    position: absolute;
+    top: 50px;
+    right: 50px;
+    color: white;
+    font-size: 36px;
+    cursor: pointer;
   }
 </style>
 

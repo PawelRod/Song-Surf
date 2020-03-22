@@ -7,7 +7,7 @@
       <img :src="item.thumbnail">
       <a :href="item.content" target="_blank">Show lyrics</a>
     </div>
-    <choosenSong v-show="show" :songPath="songPath" />
+    <choosen-song v-show="show" :songPath="songPath" @exit="exitChild"></choosen-song>
   </div>
 </template>
 
@@ -17,7 +17,7 @@ import choosenSong from './components/choosenSong.vue'
 export default {
   name: 'App',
   components: {
-    choosenSong
+    'choosen-song': choosenSong
   },
   data() {
     return {
@@ -48,6 +48,9 @@ export default {
     chooseItem: function(item) {
       this.songPath = item.apiPath;
       this.show = !this.show;
+    },
+    exitChild: function(value) {
+      this.show = value;
     }
   }
 }
@@ -67,8 +70,5 @@ export default {
   a {
     display: block;
     margin: 10px 0;
-  }
-  choosenSong {
-    
   }
 </style>
