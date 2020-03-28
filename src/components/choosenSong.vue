@@ -2,8 +2,8 @@
   <div id="show-item">
     <p>{{ songPath }}</p>
     <iframe width="420" height="315"
-      :src="myUrl"
-      frameborder="0" allowfullscreen>
+      :src="embedUrl"
+      frameborder="0" allowfullscreen allow="autoplay">
     </iframe>
     <a @click="exit">X</a>
   </div>
@@ -19,24 +19,31 @@ export default {
   data() {
     return {
       item: [],
-      myUrl: ''
+      embedUrl: ''
     }
   },
   methods: {
     exit: function() {
       this.$emit('exit', false);
+      this.embedUrl = '';
     }
   },
   beforeUpdate() {
-      const token = 'e6BVaO8SJJ0-FYN8GAcyJUAZO3TCGsbQHzOl99-vfMfjkm57ppuPaqR61gImTbyB';
-      this.$http.get('http://api.genius.com' + this.songPath + '?access_token=' + token).then(function(data){
-        console.log(data);
-        this.item = data
-        let str = this.item.body.response.song.media[0].url;
-        let res = str.split("=");
-        this.myUrl = "https://www.youtube.com/embed/" + res[1] + "?autoplay=1";
-      })
-  }
+    this.$forceUpdate();
+    const token = 'e6BVaO8SJJ0-FYN8GAcyJUAZO3TCGsbQHzOl99-vfMfjkm57ppuPaqR61gImTbyB';
+    this.$http.get('http://api.genius.com' + this.songPath + '?access_token=' + token).then(function(data){
+    this.item = data;
+    let str = this.item.body.response.song.media;
+    for(var i = 0; i < str.length; i++) {
+      if(str[i].url.charAt(11) == 'y') {
+        str = this.item.body.response.song.media[i].url;
+        break;
+      }
+    }
+    let res = str.split("=");
+    this.embedUrl = "https://www.youtube.com/embed/" + res[1] + "?autoplay=1";
+    })
+  },
 }
 </script>
 
