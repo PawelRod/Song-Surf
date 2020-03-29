@@ -7,7 +7,7 @@
       <img :src="item.thumbnail">
       <a :href="item.content" target="_blank">Show lyrics</a>
     </div>
-    <choosen-song v-show="show" :songPath="songPath" @exit="exitChild"></choosen-song>
+    <choosen-song v-show="show" :embedUrl="embedUrl" @exit="exitChild"></choosen-song>
   </div>
 </template>
 
@@ -24,14 +24,14 @@ export default {
       search: '',
       items: [],
       key: 1,
-      songPath: '',
-      show: false
+      show: false,
+      token: 'e6BVaO8SJJ0-FYN8GAcyJUAZO3TCGsbQHzOl99-vfMfjkm57ppuPaqR61gImTbyB',
+      embedUrl: ''
     }
   },
   methods: {
     showItems: function() {
-      const token = 'e6BVaO8SJJ0-FYN8GAcyJUAZO3TCGsbQHzOl99-vfMfjkm57ppuPaqR61gImTbyB';
-      this.$http.get('http://api.genius.com/search?access_token=' + token + '&q=' + this.search).then(function(data){
+      this.$http.get('http://api.genius.com/search?access_token=' + this.token + '&q=' + this.search).then(function(data){
         this.items = data.body.response.hits.map(function(hit){
           return {
             content: hit.result.url,
@@ -46,11 +46,23 @@ export default {
       }
     },
     chooseItem: function(item) {
-      this.songPath = item.apiPath;
       this.show = !this.show;
+      this.$http.get('http://api.genius.com' + item.apiPath + '?access_token=' + this.token).then(function(data){
+        this.item = data;
+        let str = this.item.body.response.song.media;
+        for(var i = 0; i < str.length; i++) {
+          if(str[i].url.charAt(11) == 'y') {
+            str = this.item.body.response.song.media[i].url;
+            break;
+          }
+        }
+        let res = str.split("=");
+        this.embedUrl = "https://www.youtube.com/embed/" + res[1] + "?autoplay=1";
+      })
     },
     exitChild: function(value) {
       this.show = value;
+      this.embedUrl = '';
     }
   }
 }

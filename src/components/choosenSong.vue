@@ -14,35 +14,17 @@
 export default {
   name: 'choosenSong',
   props: {
-    songPath: String,
+    embedUrl: String,
   },
   data() {
     return {
       item: [],
-      embedUrl: ''
     }
   },
   methods: {
     exit: function() {
       this.$emit('exit', false);
-      this.embedUrl = '';
     }
-  },
-  beforeUpdate() {
-    this.$forceUpdate();
-    const token = 'e6BVaO8SJJ0-FYN8GAcyJUAZO3TCGsbQHzOl99-vfMfjkm57ppuPaqR61gImTbyB';
-    this.$http.get('http://api.genius.com' + this.songPath + '?access_token=' + token).then(function(data){
-    this.item = data;
-    let str = this.item.body.response.song.media;
-    for(var i = 0; i < str.length; i++) {
-      if(str[i].url.charAt(11) == 'y') {
-        str = this.item.body.response.song.media[i].url;
-        break;
-      }
-    }
-    let res = str.split("=");
-    this.embedUrl = "https://www.youtube.com/embed/" + res[1] + "?autoplay=1";
-    })
   },
 }
 </script>
