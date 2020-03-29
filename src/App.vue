@@ -7,7 +7,7 @@
       <img :src="item.thumbnail">
       <a :href="item.content" target="_blank">Show lyrics</a>
     </div>
-    <choosen-song v-show="show" :embedUrl="embedUrl" @exit="exitChild"></choosen-song>
+    <choosen-song v-show="showComp" :embedUrl="embedUrl" :noVideoAlert="noVideoAlert" @exit="exitComp"></choosen-song>
   </div>
 </template>
 
@@ -24,9 +24,10 @@ export default {
       search: '',
       items: [],
       key: 1,
-      show: false,
+      showComp: false,
       token: 'e6BVaO8SJJ0-FYN8GAcyJUAZO3TCGsbQHzOl99-vfMfjkm57ppuPaqR61gImTbyB',
-      embedUrl: ''
+      embedUrl: '',
+      noVideoAlert: '',
     }
   },
   methods: {
@@ -46,7 +47,8 @@ export default {
       }
     },
     chooseItem: function(item) {
-      this.show = !this.show;
+      this.showComp = !this.showComp;
+      this.noVideoAlert = '';
       this.$http.get('http://api.genius.com' + item.apiPath + '?access_token=' + this.token).then(function(data){
         this.item = data;
         let str = this.item.body.response.song.media;
@@ -58,10 +60,12 @@ export default {
         }
         let res = str.split("=");
         this.embedUrl = "https://www.youtube.com/embed/" + res[1] + "?autoplay=1";
-      })
+      }).catch(() => {
+        this.noVideoAlert = 'Sorry, video not available.';
+      });
     },
-    exitChild: function(value) {
-      this.show = value;
+    exitComp: function(value) {
+      this.showComp = value;
       this.embedUrl = '';
     }
   }
