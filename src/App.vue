@@ -2,7 +2,8 @@
   <div id="app">
     <h1>Songs:</h1>
     <input v-model="search" @input="showItems">
-    <div v-for="item in items" :key="item.length" class="single-item" @click="chooseItem(item)">
+    <div>{{ loader }}</div>
+    <div v-show="!loader" v-for="item in items" :key="item.length" class="single-item" @click="chooseItem(item)">
       <p>{{ item.description }}</p>
       <img :src="item.thumbnail">
       <a :href="item.content" target="_blank">Show lyrics</a>
@@ -28,11 +29,15 @@ export default {
       token: 'e6BVaO8SJJ0-FYN8GAcyJUAZO3TCGsbQHzOl99-vfMfjkm57ppuPaqR61gImTbyB',
       embedUrl: '',
       noVideoAlert: '',
+      loader: ''
     }
   },
   methods: {
     showItems: function() {
-      this.$http.get('http://api.genius.com/search?access_token=' + this.token + '&q=' + this.search).then(function(data){
+      clearTimeout(result);
+      this.loader = 'Loading...';
+      const result = setTimeout(() =>
+        this.$http.get('http://api.genius.com/search?access_token=' + this.token + '&q=' + this.search).then(function(data){
         this.items = data.body.response.hits.map(function(hit){
           return {
             content: hit.result.url,
@@ -41,7 +46,9 @@ export default {
             apiPath: hit.result.api_path,
           }
         });
-      });
+        this.loader = '';
+      })
+      , 1000);
       if(this.search == "") {
         this.items.slice(10);
       }
@@ -68,7 +75,7 @@ export default {
       this.showComp = value;
       this.embedUrl = '';
     }
-  }
+  },
 }
 </script>
 
