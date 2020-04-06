@@ -6,7 +6,7 @@
       frameborder="0" allowfullscreen allow="autoplay">
       </iframe>
     </div>
-    <p>{{ noVideoAlert }}</p>
+    <p v-if="noVideoAlert">Sorry, video not available.</p>
     <a @click="exit">X</a>
   </div>
 </template>
@@ -17,7 +17,7 @@ export default {
   name: 'choosenSong',
   props: {
     embedUrl: String,
-    noVideoAlert: String
+    noVideoAlert: Boolean
   },
   data() {
     return {

@@ -1,9 +1,9 @@
 <template>
   <div id="app">
     <h1>Songs:</h1>
-    <input v-model="search" @input="showItems">
-    <div>{{ loader }}</div>
-    <div v-show="!loader" v-for="item in items" :key="item.length" class="single-item" @click="chooseItem(item)">
+    <input v-model="search" @input="loadingThenShowItems">
+    <div v-if="loading">Loading...</div>
+    <div v-show="!loading" v-for="item in items" :key="item.length" class="single-item" @click="chooseItem(item)">
       <p>{{ item.description }}</p>
       <img :src="item.thumbnail">
       <a :href="item.content" target="_blank">Show lyrics</a>
@@ -13,6 +13,7 @@
 </template>
 
 <script>
+import debounce from 'debounce'
 import choosenSong from './components/choosenSong.vue'
 
 export default {
@@ -28,16 +29,18 @@ export default {
       showComp: false,
       token: 'e6BVaO8SJJ0-FYN8GAcyJUAZO3TCGsbQHzOl99-vfMfjkm57ppuPaqR61gImTbyB',
       embedUrl: '',
-      noVideoAlert: '',
-      loader: ''
+      noVideoAlert: false,
+      loading: false
     }
   },
   methods: {
+    loadingThenShowItems: function() {
+        this.loading = true;
+        this.showItems();
+    },
     showItems: function() {
-      clearTimeout(result);
-      this.loader = 'Loading...';
-      const result = setTimeout(() =>
-        this.$http.get('http://api.genius.com/search?access_token=' + this.token + '&q=' + this.search).then(function(data){
+      this.$http.get('http://api.genius.com/search?access_token=' + this.token + '&q=' + this.search).then(function(data){
+        this.loading = false;
         this.items = data.body.response.hits.map(function(hit){
           return {
             content: hit.result.url,
@@ -46,16 +49,11 @@ export default {
             apiPath: hit.result.api_path,
           }
         });
-        this.loader = '';
       })
-      , 1000);
-      if(this.search == "") {
-        this.items.slice(10);
-      }
     },
     chooseItem: function(item) {
       this.showComp = !this.showComp;
-      this.noVideoAlert = '';
+      this.noVideoAlert = false;
       this.$http.get('http://api.genius.com' + item.apiPath + '?access_token=' + this.token).then(function(data){
         this.item = data;
         let str = this.item.body.response.song.media;
@@ -68,7 +66,7 @@ export default {
         let res = str.split("=");
         this.embedUrl = "https://www.youtube.com/embed/" + res[1] + "?autoplay=1";
       }).catch(() => {
-        this.noVideoAlert = 'Sorry, video not available.';
+        this.noVideoAlert = true;
       });
     },
     exitComp: function(value) {
@@ -76,6 +74,9 @@ export default {
       this.embedUrl = '';
     }
   },
+  created() {
+    this.showItems = debounce(this.showItems, 1000)
+  }
 }
 </script>
 
