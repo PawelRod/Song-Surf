@@ -8,7 +8,10 @@
       <img :src="item.thumbnail">
       <a :href="item.content" target="_blank">Show lyrics</a>
     </div>
-    <choosen-song v-show="showComp" :embedUrl="embedUrl" :noVideoAlert="noVideoAlert" @exit="exitComp"></choosen-song>
+    <choosen-song v-show="showComp" 
+    :embedUrl="embedUrl" 
+    :noVideoAlert="noVideoAlert"
+    @exit="exitComp"></choosen-song>
   </div>
 </template>
 
@@ -54,7 +57,9 @@ export default {
     chooseItem: function(item) {
       this.showComp = !this.showComp;
       this.noVideoAlert = false;
+      this.loading = true;
       this.$http.get('http://api.genius.com' + item.apiPath + '?access_token=' + this.token).then(function(data){
+        this.loading = false;
         this.item = data;
         let str = this.item.body.response.song.media;
         for(var i = 0; i < str.length; i++) {
@@ -80,7 +85,7 @@ export default {
 }
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
   #app {
     text-align: center;
   }
