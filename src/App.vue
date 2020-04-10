@@ -86,6 +86,8 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+  $defaultColor: #00bed7;
+  $defaultBg: #a9d7e6;
   #app {
     text-align: center;
   }
