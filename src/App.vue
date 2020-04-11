@@ -91,10 +91,18 @@ export default {
   #app {
     text-align: center;
   }
+  @keyframes fade-in {
+    0% { left: 45%; opacity: 0 }
+    100% { left: 50%; opacity: 1 }
+  }
   .single-item {
     border: 3px solid lightblue;
     width: 500px;
-    margin: 10px auto;
+    margin: 10px 0;
+    position: relative;
+    left: 50%;
+    transform: translateX(-50%);
+    animation: fade-in 1s 0s forwards;
   }
   input {
     margin: 30px 0;
