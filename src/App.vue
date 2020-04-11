@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <h1>Songs:</h1>
+    <div class="logo"></div>
     <input v-model="search" @input="loadingThenShowItems">
     <div v-if="loading">Loading...</div>
     <div v-show="!loading" v-for="item in items" :key="item.length" class="single-item" @click="chooseItem(item)">
@@ -92,11 +92,23 @@ export default {
     text-align: center;
   }
   .single-item {
-    border-bottom: 2px solid black;
+    border: 3px solid lightblue;
+    width: 500px;
+    margin: 10px auto;
+  }
+  input {
+    margin: 30px 0;
   }
   img {
     width: 100px;
     height: 100px;
+  }
+  .logo {
+    background: url('../public/logo.png');
+    background-size: cover;
+    width: 400px;
+    height: 250px;
+    margin: 0 auto;
   }
   a {
     display: block;
