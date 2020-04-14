@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <div class="logo"></div>
-    <input v-model="search" @input="loadingThenShowItems" spellcheck="false">
+    <input v-model="search" @input="loadingThenShowItems" placeholder="find artists, titles, albums and more..." spellcheck="false">
     <div v-if="loading">Loading...</div>
     <div v-show="!loading" v-for="item in items" :key="item.length" class="single-item" @click="chooseItem(item)">
       <p>{{items.indexOf(item)+1}}.</p>
@@ -136,6 +136,14 @@ export default {
     text-transform: uppercase;
     &:focus {
       outline: none;
+    }
+    &::placeholder {
+      text-transform: capitalize;
+      text-align: center;
+      margin: 5px 10px;
+    }
+    &:focus::placeholder {
+      color: transparent;
     }
   }
   .logo {
