@@ -98,7 +98,7 @@ export default {
   }
   .single-item {
     border-bottom: 2px solid $defaultColor;
-    padding: 8px;
+    padding: 12px;
     background: white;
     width: 950px;
     margin: 20px 0;
@@ -118,8 +118,10 @@ export default {
       border-bottom: 2px solid grey;
     }
     img {
-      margin-left: 5px;
+      width: 100px;
+      height: 100px;
       align-self: start;
+      box-shadow: 5px 5px 14px -6px rgba(0,0,0,0.85);
     }
   }
   input {
@@ -135,10 +137,6 @@ export default {
     &:focus {
       outline: none;
     }
-  }
-  img {
-    width: 100px;
-    height: 100px;
   }
   .logo {
     background: url('../public/logo.png');
