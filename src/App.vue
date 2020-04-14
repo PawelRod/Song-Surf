@@ -4,9 +4,9 @@
     <input v-model="search" @input="loadingThenShowItems" spellcheck="false">
     <div v-if="loading">Loading...</div>
     <div v-show="!loading" v-for="item in items" :key="item.length" class="single-item" @click="chooseItem(item)">
-      <p>{{ item.description }}</p>
+      <p>{{items.indexOf(item)+1}}.</p>
       <img :src="item.thumbnail">
-      <a :href="item.content" target="_blank">Show lyrics</a>
+      <p>{{ item.description }}</p>
     </div>
     <choosen-song v-show="showComp" 
     :embedUrl="embedUrl" 
@@ -43,6 +43,7 @@ export default {
     },
     showItems: function() {
       this.$http.get('http://api.genius.com/search?access_token=' + this.token + '&q=' + this.search).then(function(data){
+        console.log(data);
         this.loading = false;
         this.items = data.body.response.hits.map(function(hit){
           return {
@@ -96,24 +97,39 @@ export default {
     100% { left: 50%; opacity: 1 }
   }
   .single-item {
-    border: 2px solid $defaultColor;
-    padding: 3px;
+    border-bottom: 2px solid $defaultColor;
+    padding: 8px;
     background: white;
-    width: 500px;
+    width: 950px;
     margin: 20px 0;
     position: relative;
     left: 50%;
     transform: translateX(-50%);
     animation: fade-in 1s 0s forwards;
     cursor: pointer;
+    font-size: 20px;
+    transition: background .3s,  border-bottom  .3s;
+    display: grid;
+    align-items: center;
+    grid-column: span 5 / auto;
+    grid-template-columns: 140px 150px auto 50px 40px;
+    &:hover {
+      background: $defaultBg;
+      border-bottom: 2px solid grey;
+    }
+    img {
+      margin-left: 5px;
+      align-self: start;
+    }
   }
   input {
     margin: 30px 0;
-    width: 500px;
-    height: 40px;
+    width: 600px;
+    height: 50px;
     font-size: 32px;
     border: 0;
     border-bottom: 5px $defaultColor solid;
+    padding: 0px 15px;
     background: $defaultBg;
     text-transform: uppercase;
     &:focus {
