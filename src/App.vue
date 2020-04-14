@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <div class="logo"></div>
-    <input v-model="search" @input="loadingThenShowItems">
+    <input v-model="search" @input="loadingThenShowItems" spellcheck="false">
     <div v-if="loading">Loading...</div>
     <div v-show="!loading" v-for="item in items" :key="item.length" class="single-item" @click="chooseItem(item)">
       <p>{{ item.description }}</p>
@@ -87,7 +87,7 @@ export default {
 
 <style lang="scss" scoped>
   $defaultColor: #00bed7;
-  $defaultBg: #a9d7e6;
+  $defaultBg: #dff5fd;
   #app {
     text-align: center;
   }
@@ -96,16 +96,29 @@ export default {
     100% { left: 50%; opacity: 1 }
   }
   .single-item {
-    border: 3px solid lightblue;
+    border: 2px solid $defaultColor;
+    padding: 3px;
+    background: white;
     width: 500px;
-    margin: 10px 0;
+    margin: 20px 0;
     position: relative;
     left: 50%;
     transform: translateX(-50%);
     animation: fade-in 1s 0s forwards;
+    cursor: pointer;
   }
   input {
     margin: 30px 0;
+    width: 500px;
+    height: 40px;
+    font-size: 32px;
+    border: 0;
+    border-bottom: 5px $defaultColor solid;
+    background: $defaultBg;
+    text-transform: uppercase;
+    &:focus {
+      outline: none;
+    }
   }
   img {
     width: 100px;
