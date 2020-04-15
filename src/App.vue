@@ -1,5 +1,6 @@
 <template>
   <div id="app">
+    <div class="background"></div>
     <div class="logo"></div>
     <input v-model="search" @input="loadingThenShowItems" placeholder="find artists, titles, albums and more..." spellcheck="false">
     <div v-if="loading">Loading...</div>
