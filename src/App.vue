@@ -91,7 +91,18 @@ export default {
   $defaultColor: #00bed7;
   $defaultBg: #dff5fd;
   #app {
+    height: 100%;
     text-align: center;
+  }
+  .background {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    background: $defaultBg;
+    clip-path: polygon(-3% 28%, 95% 11%, 72% 24%, 55% 38%, 43% 72%, 41% 93%);
+    z-index: -1;
   }
   @keyframes fade-in {
     0% { left: 45%; opacity: 0 }
@@ -100,7 +111,7 @@ export default {
   .single-item {
     border-bottom: 2px solid $defaultColor;
     padding: 12px;
-    background: white;
+    background: rgba(255, 255, 255, .8);
     width: 950px;
     margin: 20px 0;
     position: relative;
@@ -115,7 +126,7 @@ export default {
     grid-column: span 5 / auto;
     grid-template-columns: 140px 150px auto 50px 40px;
     &:hover {
-      background: $defaultBg;
+      background: whitesmoke;
       border-bottom: 2px solid grey;
     }
     img {
@@ -126,14 +137,14 @@ export default {
     }
   }
   input {
-    margin: 30px 0;
+    margin: 45px 0;
     width: 600px;
     height: 50px;
     font-size: 32px;
     border: 0;
     border-bottom: 5px $defaultColor solid;
-    padding: 0px 15px;
-    background: $defaultBg;
+    padding: 8px 18px;
+    background: whitesmoke;
     text-transform: uppercase;
     &:focus {
       outline: none;
@@ -152,7 +163,7 @@ export default {
     background-size: cover;
     width: 400px;
     height: 250px;
-    margin: 0 auto;
+    margin-left: 10%;
   }
   a {
     display: block;
