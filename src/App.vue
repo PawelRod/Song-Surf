@@ -161,7 +161,7 @@ export default {
   .logo {
     background: url('../public/logo.png');
     background-size: cover;
-    width: 400px;
+    width: 500px;
     height: 250px;
     margin-left: 10%;
   }
