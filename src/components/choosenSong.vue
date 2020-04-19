@@ -1,5 +1,5 @@
 <template>
-  <div id="show-item">
+  <section id="show-item">
     <div class="video">
       <iframe width="420" height="315"
       :src="embedUrl"
@@ -7,8 +7,8 @@
       </iframe>
     </div>
     <p v-if="noVideoAlert">Sorry, video not available.</p>
-    <a @click="exit">X</a>
-  </div>
+    <button aria-label="Close" @click="exit">X</button>
+  </section>
 </template>
 
 <script>

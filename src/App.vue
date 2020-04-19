@@ -1,14 +1,26 @@
 <template>
   <div id="app">
     <div class="background"></div>
-    <div class="logo"></div>
-    <input v-model="search" @input="loadingThenShowItems" placeholder="find artists, titles, albums and more..." spellcheck="false">
+    <header class="header">
+      <img class="header__decoration-left" src="../public/logo-decoration.png" alt="Main logo" />
+      <img class="header__logo" src="../public/logo.png" alt="Left side logo decoration" />
+      <div class="header__decoration-right" title="Right side logo decoration"></div>
+    </header>
+    <form method="get">
+      <input v-model="search" @input="loadingThenShowItems" 
+      type="search" 
+      aria-label="Enter search text" 
+      placeholder="find artists, titles, albums and more..." 
+      spellcheck="false">
+    </form>
     <div v-if="loading">Loading...</div>
-    <div v-show="!loading" v-for="item in items" :key="item.length" class="single-item" @click="chooseItem(item)">
-      <p>{{items.indexOf(item)+1}}.</p>
-      <img :src="item.thumbnail">
-      <p>{{ item.description }}</p>
-    </div>
+    <section class="items__container">
+      <div v-show="!loading" v-for="item in items" :key="item.length" class="items__song" @click="chooseItem(item)">
+        <p>{{items.indexOf(item)+1}}.</p>
+        <img :src="item.thumbnail" alt="Album cover">
+        <p>{{ item.description }}</p>
+      </div>
+    </section>
     <choosen-song v-show="showComp" 
     :embedUrl="embedUrl" 
     :noVideoAlert="noVideoAlert"
@@ -91,33 +103,56 @@ export default {
   $defaultColor: #00bed7;
   $defaultBg: #dff5fd;
   #app {
-    height: 100%;
+    position: relative;
+    min-height: 100%;
+    height: auto;
     text-align: center;
   }
   .background {
     position: absolute;
-    top: 0;
-    left: 0;
-    height: 100%;
-    width: 100%;
+    height: 100vh;
+    width: 100vw;
     background: $defaultBg;
     clip-path: polygon(-3% 28%, 95% 11%, 72% 24%, 55% 38%, 43% 72%, 41% 93%);
     z-index: -1;
   }
-  @keyframes fade-in {
-    0% { left: 45%; opacity: 0 }
-    100% { left: 50%; opacity: 1 }
+  .header {
+    width: 100vw;
+    height: 15vw;
+    padding-top: 20px;
   }
-  .single-item {
+  .header__decoration-left {
+    object-fit: contain;
+    width: 8vw;
+    height: 15vw;
+  }
+  .header__logo {
+    object-fit: contain;
+    width: 30vw;
+    height: 15vw;
+  }
+  .header__decoration-right {
+    display: inline-block;
+    background: url(../public/logo-decoration.png);
+    background-size: contain;
+    background-repeat: repeat-x;
+    width: 62vw;
+    height: 15vw;
+  }
+  @keyframes fade-in {
+    0% { transform: translateX(-50px); opacity: 0 }
+    100% { transform: translateX(0px); opacity: 1 }
+  }
+  .items__container {
+    margin: 0 auto;
+  }
+  .items__song {
     border-bottom: 2px solid $defaultColor;
     padding: 12px;
     background: rgba(255, 255, 255, .8);
     width: 950px;
-    margin: 20px 0;
-    position: relative;
-    left: 50%;
-    transform: translateX(-50%);
-    animation: fade-in 1s 0s forwards;
+    margin: 20px auto;
+    left: 45%;
     cursor: pointer;
     font-size: 20px;
     transition: background .3s,  border-bottom  .3s;
@@ -125,6 +160,7 @@ export default {
     align-items: center;
     grid-column: span 5 / auto;
     grid-template-columns: 140px 150px auto 50px 40px;
+    animation: fade-in 1s 0s forwards;
     &:hover {
       background: whitesmoke;
       border-bottom: 2px solid grey;
@@ -157,16 +193,5 @@ export default {
     &:focus::placeholder {
       color: transparent;
     }
-  }
-  .logo {
-    background: url('../public/logo.png');
-    background-size: cover;
-    width: 500px;
-    height: 250px;
-    margin-left: 10%;
-  }
-  a {
-    display: block;
-    margin: 10px 0;
   }
 </style>
