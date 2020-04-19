@@ -5,6 +5,7 @@
       <img class="header__decoration-left" src="../public/logo-decoration.png" alt="Main logo" />
       <img class="header__logo" src="../public/logo.png" alt="Left side logo decoration" />
       <div class="header__decoration-right" title="Right side logo decoration"></div>
+      <h1>Large music database!</h1>
     </header>
     <form method="get">
       <input v-model="search" @input="loadingThenShowItems" 
@@ -100,6 +101,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+  @import url('https://fonts.googleapis.com/css?family=Lexend+Giga&display=swap');
   $defaultColor: #00bed7;
   $defaultBg: #dff5fd;
   #app {
@@ -117,9 +119,10 @@ export default {
     z-index: -1;
   }
   .header {
+    position: relative;
     width: 100vw;
     height: 15vw;
-    padding-top: 20px;
+    padding-top: 10px;
   }
   .header__decoration-left {
     object-fit: contain;
@@ -138,6 +141,16 @@ export default {
     background-repeat: repeat-x;
     width: 62vw;
     height: 15vw;
+  }
+  h1 {
+    font-family: 'Lexend Giga', sans-serif;
+    position: absolute;
+    letter-spacing: -.4vw;
+    right: 15vw;
+    bottom: 4vw;
+    font-size: 3vw;
+    font-weight: 800;
+    text-shadow: 0 0 5px #FFF, 0 0 10px #FFF, 0 0 15px #FFF, 0 0 20px #FFF, 0 0 30px #FFF, 0 0 40px #FFF, 0 0 55px #FFF, 0 0 75px #FFF;
   }
   @keyframes fade-in {
     0% { transform: translateX(-50px); opacity: 0 }
@@ -173,12 +186,13 @@ export default {
     }
   }
   input {
-    margin: 45px 0;
+    margin: 90px 0 45px;
     width: 600px;
-    height: 50px;
+    height: 60px;
     font-size: 32px;
     border: 0;
     border-bottom: 5px $defaultColor solid;
+    border-radius: 10px;
     padding: 8px 18px;
     background: whitesmoke;
     text-transform: uppercase;
