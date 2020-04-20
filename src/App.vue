@@ -5,9 +5,9 @@
       <img class="header__decoration-left" src="../public/logo-decoration.png" alt="Main logo" />
       <img class="header__logo" src="../public/logo.png" alt="Left side logo decoration" />
       <div class="header__decoration-right" title="Right side logo decoration"></div>
-      <h1>Large music database!</h1>
+      <h1>Large music database</h1>
     </header>
-    <form method="get">
+    <form method="get" v-on:submit.prevent>
       <input v-model="search" @input="loadingThenShowItems" 
       type="search" 
       aria-label="Enter search text" 
@@ -196,6 +196,7 @@ export default {
     padding: 8px 18px;
     background: whitesmoke;
     text-transform: uppercase;
+    box-shadow: 0px 0px 70px 0px rgba(255,255,255,1);
     &:focus {
       outline: none;
     }
