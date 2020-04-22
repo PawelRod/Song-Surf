@@ -14,6 +14,10 @@
       placeholder="find artists, titles, albums and more..." 
       spellcheck="false">
     </form>
+    <div>
+      <p>{{ quotes[randomNumber].quote }}</p>
+      <p>{{ quotes[randomNumber].author }}</p>
+    </div>
     <div v-if="loading">Loading...</div>
     <section class="items__container">
       <div v-show="!loading" v-for="item in items" :key="item.length" class="items__song" @click="chooseItem(item)">
@@ -32,6 +36,7 @@
 <script>
 import debounce from 'debounce'
 import choosenSong from './components/choosenSong.vue'
+import quotes from './data/quotes.json'
 
 export default {
   name: 'App',
@@ -47,7 +52,9 @@ export default {
       token: 'e6BVaO8SJJ0-FYN8GAcyJUAZO3TCGsbQHzOl99-vfMfjkm57ppuPaqR61gImTbyB',
       embedUrl: '',
       noVideoAlert: false,
-      loading: false
+      loading: false,
+      quotes: quotes,
+      randomNumber: Math.floor(Math.random() * 10)
     }
   },
   methods: {
@@ -95,7 +102,7 @@ export default {
     }
   },
   created() {
-    this.showItems = debounce(this.showItems, 1000)
+    this.showItems = debounce(this.showItems, 1000);
   }
 }
 </script>
