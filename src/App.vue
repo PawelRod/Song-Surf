@@ -14,14 +14,14 @@
       placeholder="find artists, titles, albums and more..." 
       spellcheck="false">
     </form>
-    <div>
+    <div class="quotes">
       <p>{{ quotes[randomNumber].quote }}</p>
-      <p>{{ quotes[randomNumber].author }}</p>
+      <p>- {{ quotes[randomNumber].author }}</p>
     </div>
     <div v-if="loading">Loading...</div>
     <section class="items__container">
-      <div v-show="!loading" v-for="item in items" :key="item.length" class="items__song" @click="chooseItem(item)">
-        <p>{{items.indexOf(item)+1}}.</p>
+      <div v-show="!loading" v-for="(item, index) in items" :key="item.length" class="items__song" @click="chooseItem(item)">
+        <p>{{ index + 1 }}.</p>
         <img :src="item.thumbnail" alt="Album cover">
         <p>{{ item.description }}</p>
       </div>
@@ -111,7 +111,12 @@ export default {
   @import url('https://fonts.googleapis.com/css?family=Lexend+Giga&display=swap');
   $defaultColor: #00bed7;
   $defaultBg: #dff5fd;
+  @mixin font {
+    font-family: 'Lexend Giga', sans-serif;
+    letter-spacing: -2.3px;
+  }
   #app {
+    @include font;
     position: relative;
     min-height: 100%;
     height: auto;
@@ -154,7 +159,7 @@ export default {
     position: absolute;
     letter-spacing: -.4vw;
     right: 15vw;
-    bottom: 4vw;
+    bottom: 3.6vw;
     font-size: 3vw;
     font-weight: 800;
     text-shadow: 0 0 5px #FFF, 0 0 10px #FFF, 0 0 15px #FFF, 0 0 20px #FFF, 0 0 30px #FFF, 0 0 40px #FFF, 0 0 55px #FFF, 0 0 75px #FFF;
@@ -194,12 +199,11 @@ export default {
   }
   input {
     margin: 90px 0 45px;
-    width: 600px;
+    width: 700px;
     height: 60px;
     font-size: 32px;
     border: 0;
     border-bottom: 5px $defaultColor solid;
-    border-radius: 10px;
     padding: 8px 18px;
     background: whitesmoke;
     text-transform: uppercase;
@@ -208,12 +212,24 @@ export default {
       outline: none;
     }
     &::placeholder {
+      @include font;
+      letter-spacing: -5px;
       text-transform: capitalize;
       text-align: center;
       margin: 5px 10px;
     }
     &:focus::placeholder {
       color: transparent;
+    }
+  }
+  .quotes {
+    position: absolute;
+    bottom: 0;
+    margin-bottom: 80px;
+    width: 100%;
+    p {
+      margin: 7px auto;
+      max-width: 450px;
     }
   }
 </style>
