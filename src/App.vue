@@ -1,20 +1,21 @@
 <template>
   <div id="app">
     <div class="background"></div>
-    <header class="header">
-      <img class="header__decoration-left" src="../public/logo-decoration.png" alt="Main logo" />
-      <img class="header__logo" src="../public/logo.png" alt="Left side logo decoration" />
-      <div class="header__decoration-right" title="Right side logo decoration"></div>
-      <h1>Large music database</h1>
+    <header class="header" :class="{ 'header--thin': inputIsFilled }">
+      <img class="header__decoration-left" :class="{ 'header__decoration-left--thin': inputIsFilled }" src="../public/logo-decoration.png" alt="Main logo" />
+      <img class="header__logo" :class="{ 'header__logo--thin': inputIsFilled }" src="../public/logo.png" alt="Left side logo decoration" />
+      <div class="header__decoration-right" :class="{ 'header__decoration-right--thin': inputIsFilled }" title="Right side logo decoration"></div>
+      <h1 class="header__text" :class="{ 'header__text--thin': inputIsFilled }">Large music database</h1>
     </header>
-    <form method="get" v-on:submit.prevent>
-      <input v-model="search" @input="loadingThenShowItems" 
+    <form class="form" method="get" v-on:submit.prevent>
+      <input class="form__input" :class="{ 'form__input--margin': inputIsFilled }"
+      v-model="search" @input="loadingThenShowItems" 
       type="search" 
       aria-label="Enter search text" 
       placeholder="find artists, titles, albums and more..." 
       spellcheck="false">
     </form>
-    <div class="quotes">
+    <div class="quotes" :class="{ 'quotes--fadeout': inputIsFilled }">
       <p>{{ quotes[randomNumber].quote }}</p>
       <p>- {{ quotes[randomNumber].author }}</p>
     </div>
@@ -54,17 +55,21 @@ export default {
       noVideoAlert: false,
       loading: false,
       quotes: quotes,
-      randomNumber: Math.floor(Math.random() * 10)
+      randomNumber: Math.floor(Math.random() * 10),
+      inputIsFilled: false
     }
   },
   methods: {
     loadingThenShowItems: function() {
         this.loading = true;
+        this.inputIsFilled = true;
         this.showItems();
+        if (this.search == "") {
+          this.inputIsFilled = false;
+        }
     },
     showItems: function() {
       this.$http.get('http://api.genius.com/search?access_token=' + this.token + '&q=' + this.search).then(function(data){
-        console.log(data);
         this.loading = false;
         this.items = data.body.response.hits.map(function(hit){
           return {
@@ -135,16 +140,17 @@ export default {
     width: 100vw;
     height: 15vw;
     padding-top: 10px;
+    transition: height .4s;
   }
   .header__decoration-left {
     object-fit: contain;
     width: 8vw;
-    height: 15vw;
+    transition: width .2s;
   }
   .header__logo {
     object-fit: contain;
     width: 30vw;
-    height: 15vw;
+    transition: width .2s;
   }
   .header__decoration-right {
     display: inline-block;
@@ -153,8 +159,21 @@ export default {
     background-repeat: repeat-x;
     width: 62vw;
     height: 15vw;
+    transition: width .2s;
   }
-  h1 {
+  .header--thin, .header__decoration-left--thin, .header__logo--thin, .header__decoration-right--thin {
+    height: 10vw;
+  }
+  .header__decoration-left--thin {
+    width: 5vw;
+  }
+  .header__logo--thin {
+    width: 20vw;
+  }
+  .header__decoration-right--thin {
+    width: 75vw;
+  }
+  .header__text {
     font-family: 'Lexend Giga', sans-serif;
     position: absolute;
     letter-spacing: -.4vw;
@@ -163,10 +182,15 @@ export default {
     font-size: 3vw;
     font-weight: 800;
     text-shadow: 0 0 5px #FFF, 0 0 10px #FFF, 0 0 15px #FFF, 0 0 20px #FFF, 0 0 30px #FFF, 0 0 40px #FFF, 0 0 55px #FFF, 0 0 75px #FFF;
+    transition: bottom .3s;
   }
   @keyframes fade-in {
     0% { transform: translateX(-50px); opacity: 0 }
     100% { transform: translateX(0px); opacity: 1 }
+  }
+  .header__text--thin {
+    bottom: 2vw;
+    font-size: 2.5vw;
   }
   .items__container {
     margin: 0 auto;
@@ -197,7 +221,7 @@ export default {
       box-shadow: 5px 5px 14px -6px rgba(0,0,0,0.85);
     }
   }
-  input {
+  .form__input {
     margin: 90px 0 45px;
     width: 700px;
     height: 60px;
@@ -222,6 +246,10 @@ export default {
       color: transparent;
     }
   }
+  .form__input--margin {
+    margin: 40px 0 40px;
+    transition: margin .4s;
+  }
   .quotes {
     position: absolute;
     bottom: 0;
@@ -231,5 +259,10 @@ export default {
       margin: 7px auto;
       max-width: 450px;
     }
+  }
+  .quotes--fadeout {
+    transition: all .3s;
+    opacity: 0;
+    bottom: -150px;
   }
 </style>
