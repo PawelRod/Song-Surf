@@ -60,17 +60,21 @@ export default {
     }
   },
   methods: {
+    inputToMiddle: function() {
+      if (this.search == "") {
+          this.inputIsFilled = false;
+      }
+    },
     loadingThenShowItems: function() {
         this.loading = true;
-        this.inputIsFilled = true;
+        this.inputToMiddle();
         this.showItems();
-        if (this.search == "") {
-          this.inputIsFilled = false;
-        }
     },
     showItems: function() {
       this.$http.get('http://api.genius.com/search?access_token=' + this.token + '&q=' + this.search).then(function(data){
         this.loading = false;
+        this.inputIsFilled = true;
+        this.inputToMiddle();
         this.items = data.body.response.hits.map(function(hit){
           return {
             content: hit.result.url,
@@ -112,14 +116,27 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
   @import url('https://fonts.googleapis.com/css?family=Lexend+Giga&display=swap');
+
   $defaultColor: #00bed7;
   $defaultBg: #dff5fd;
+
+  $defaultHeaderHeight: 200px;
+  $headerLeftWidth: 100px;
+  $headerLogoWidth: 375px;
+  $headerRightWidth: calc(#{$headerLogoWidth} + #{$headerLeftWidth});
+
+  $defaultHeaderHeightThin: calc(#{$defaultHeaderHeight} - 50px);
+  $headerLeftWidthThin: calc(#{$headerLeftWidth} - 30px);
+  $headerLogoWidthThin: 375px;
+  $headerRightWidthThin: calc(#{$headerLogoWidth} + #{$headerLeftWidth});
+
   @mixin font {
     font-family: 'Lexend Giga', sans-serif;
     letter-spacing: -2.3px;
   }
+  
   #app {
     @include font;
     position: relative;
@@ -130,67 +147,77 @@ export default {
   .background {
     position: absolute;
     height: 100vh;
-    width: 100vw;
+    width: 100%;
     background: $defaultBg;
     clip-path: polygon(-3% 28%, 95% 11%, 72% 24%, 55% 38%, 43% 72%, 41% 93%);
     z-index: -1;
   }
   .header {
     position: relative;
-    width: 100vw;
-    height: 15vw;
+    width: 100%;
+    height: $defaultHeaderHeight;
     padding-top: 10px;
-    transition: height .4s;
+    transition: height .2s;
   }
   .header__decoration-left {
+    position: absolute;
+    left: 0%;
     object-fit: contain;
-    width: 8vw;
-    transition: width .2s;
+    width: $headerLeftWidth;
+    height: $defaultHeaderHeight;
+    transition: left .2s, width .2s;
   }
   .header__logo {
+    position: absolute;
+    left: $headerLeftWidth;
     object-fit: contain;
-    width: 30vw;
-    transition: width .2s;
+    width: $headerLogoWidth;
+    height: $defaultHeaderHeight;
+    transition: left .2s, width .2s;
   }
   .header__decoration-right {
+    position: absolute;
+    left: $headerRightWidth;
     display: inline-block;
     background: url(../public/logo-decoration.png);
     background-size: contain;
     background-repeat: repeat-x;
-    width: 62vw;
-    height: 15vw;
-    transition: width .2s;
-  }
-  .header--thin, .header__decoration-left--thin, .header__logo--thin, .header__decoration-right--thin {
-    height: 10vw;
-  }
-  .header__decoration-left--thin {
-    width: 5vw;
-  }
-  .header__logo--thin {
-    width: 20vw;
-  }
-  .header__decoration-right--thin {
-    width: 75vw;
+    width: 100%;
+    height: $defaultHeaderHeight;
+    transition: left .2s, width .2s;
   }
   .header__text {
     font-family: 'Lexend Giga', sans-serif;
     position: absolute;
-    letter-spacing: -.4vw;
+    letter-spacing: -5px;
     right: 15vw;
-    bottom: 3.6vw;
-    font-size: 3vw;
+    height: 200px;
+    line-height: 200px;
+    margin: 0;
+    font-size: 38px;
+    transform: scale(1);
     font-weight: 800;
     text-shadow: 0 0 5px #FFF, 0 0 10px #FFF, 0 0 15px #FFF, 0 0 20px #FFF, 0 0 30px #FFF, 0 0 40px #FFF, 0 0 55px #FFF, 0 0 75px #FFF;
-    transition: bottom .3s;
+    transition: transform .2s;
   }
-  @keyframes fade-in {
-    0% { transform: translateX(-50px); opacity: 0 }
-    100% { transform: translateX(0px); opacity: 1 }
+  header.header--thin, img.header__decoration-left--thin, img.header__logo--thin, div.header__decoration-right--thin {
+    height: $defaultHeaderHeightThin;
   }
-  .header__text--thin {
-    bottom: 2vw;
-    font-size: 2.5vw;
+  .header__decoration-left--thin {
+    width: $headerLeftWidthThin;
+  }
+  .header__logo--thin {
+    width: calc(#{$headerLogoWidth} - 100px);
+    left: $headerLeftWidthThin;
+  }
+  .header__decoration-right--thin {
+    left: calc(#{$headerRightWidth} - 130px);
+  }
+  h1.header__text--thin {
+    height: $defaultHeaderHeightThin;
+    line-height: $defaultHeaderHeightThin;
+    right: $defaultHeaderHeightThin;
+    transform: scale(.9);
   }
   .items__container {
     margin: 0 auto;
@@ -221,8 +248,12 @@ export default {
       box-shadow: 5px 5px 14px -6px rgba(0,0,0,0.85);
     }
   }
+  @keyframes fade-in {
+    0% { transform: translateX(-50px); opacity: 0 }
+    100% { transform: translateX(0px); opacity: 1 }
+  }
   .form__input {
-    margin: 90px 0 45px;
+    margin: 14vh 0 45px;
     width: 700px;
     height: 60px;
     font-size: 32px;
