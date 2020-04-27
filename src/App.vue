@@ -19,9 +19,8 @@
       <p>{{ quotes[randomNumber].quote }}</p>
       <p>- {{ quotes[randomNumber].author }}</p>
     </div>
-    <div v-if="loading">Loading...</div>
     <section class="items__container">
-      <div v-show="!loading" v-for="(item, index) in items" :key="item.length" class="items__song" @click="chooseItem(item)">
+      <div v-show="!loading && search != ''" v-for="(item, index) in items" :key="item.length" class="items__song" @click="chooseItem(item)">
         <p>{{ index + 1 }}.</p>
         <img :src="item.thumbnail" alt="Album cover">
         <p>{{ item.description }}</p>
@@ -30,19 +29,25 @@
     <choosen-song v-show="showComp" 
     :embedUrl="embedUrl" 
     :noVideoAlert="noVideoAlert"
-    @exit="exitComp"></choosen-song>
+    @exit="exitComp">
+    </choosen-song>
+    <transition name="loading-fade">
+      <loading-comp v-if="loading"></loading-comp>
+    </transition>
   </div>
 </template>
 
 <script>
 import debounce from 'debounce'
 import choosenSong from './components/choosenSong.vue'
+import loadingComp from './components/loadingComp.vue'
 import quotes from './data/quotes.json'
 
 export default {
   name: 'App',
   components: {
-    'choosen-song': choosenSong
+    'choosen-song': choosenSong,
+    'loading-comp': loadingComp
   },
   data() {
     return {
@@ -67,14 +72,12 @@ export default {
     },
     loadingThenShowItems: function() {
         this.loading = true;
-        this.inputToMiddle();
         this.showItems();
     },
     showItems: function() {
       this.$http.get('http://api.genius.com/search?access_token=' + this.token + '&q=' + this.search).then(function(data){
         this.loading = false;
         this.inputIsFilled = true;
-        this.inputToMiddle();
         this.items = data.body.response.hits.map(function(hit){
           return {
             content: hit.result.url,
@@ -88,9 +91,7 @@ export default {
     chooseItem: function(item) {
       this.showComp = !this.showComp;
       this.noVideoAlert = false;
-      this.loading = true;
       this.$http.get('http://api.genius.com' + item.apiPath + '?access_token=' + this.token).then(function(data){
-        this.loading = false;
         this.item = data;
         let str = this.item.body.response.song.media;
         for(var i = 0; i < str.length; i++) {
@@ -111,7 +112,11 @@ export default {
     }
   },
   created() {
-    this.showItems = debounce(this.showItems, 1000);
+    this.loadingThenShowItems = debounce(this.loadingThenShowItems, 900);
+    this.showItems = debounce(this.showItems, 500);
+  },
+  updated() {
+    this.inputToMiddle();
   }
 }
 </script>
@@ -136,7 +141,14 @@ export default {
     font-family: 'Lexend Giga', sans-serif;
     letter-spacing: -2.3px;
   }
-  
+
+  .loading-fade-enter-active, .loading-fade-leave-active {
+    transition: opacity .2s ease-in-out;
+  }
+  .loading-fade-enter, .loading-fade-leave-to {
+    opacity: 0;
+  }
+
   #app {
     @include font;
     position: relative;
@@ -187,7 +199,6 @@ export default {
     transition: left .2s, width .2s;
   }
   .header__text {
-    font-family: 'Lexend Giga', sans-serif;
     position: absolute;
     letter-spacing: -5px;
     right: 15vw;
