@@ -26,12 +26,14 @@
         <p>{{ item.description }}</p>
       </div>
     </section>
-    <choosen-song v-show="showComp" 
-    :embedUrl="embedUrl" 
-    :noVideoAlert="noVideoAlert"
-    @exit="exitComp">
-    </choosen-song>
-    <transition name="loading-fade">
+    <transition name="fade">
+      <choosen-song v-show="showComp" 
+      :embedUrl="embedUrl" 
+      :noVideoAlert="noVideoAlert"
+      @exit="exitComp">
+      </choosen-song>
+    </transition>
+    <transition name="fade">
       <loading-comp v-if="loading"></loading-comp>
     </transition>
   </div>
@@ -142,10 +144,10 @@ export default {
     letter-spacing: -2.3px;
   }
 
-  .loading-fade-enter-active, .loading-fade-leave-active {
+  .fade-enter-active, .fade-leave-active {
     transition: opacity .2s ease-in-out;
   }
-  .loading-fade-enter, .loading-fade-leave-to {
+  .fade-enter, .fade-leave-to {
     opacity: 0;
   }
 
