@@ -13,21 +13,22 @@
       type="search" 
       aria-label="Enter search text" 
       placeholder="find artists, titles, albums and more..." 
-      spellcheck="false">
+      spellcheck="false"
+      />
+      <transition-group tag="ul" name="slide-in" class="items__container">
+        <li v-show="!loading && search != ''" v-for="(item, index) in items" :key="index++" class="items__song" @click="chooseItem(item)">
+          <p>{{ index }}.</p>
+          <img :src="item.thumbnail" alt="Album cover" />
+          <p>{{ item.description }}</p>
+        </li>
+      </transition-group>
     </form>
     <div class="quotes" :class="{ 'quotes--fadeout': inputIsFilled }">
       <p>{{ quotes[randomNumber].quote }}</p>
       <p>- {{ quotes[randomNumber].author }}</p>
     </div>
-    <section class="items__container">
-      <div v-show="!loading && search != ''" v-for="(item, index) in items" :key="item.length" class="items__song" @click="chooseItem(item)">
-        <p>{{ index + 1 }}.</p>
-        <img :src="item.thumbnail" alt="Album cover">
-        <p>{{ item.description }}</p>
-      </div>
-    </section>
     <transition name="fade">
-      <choosen-song v-show="showComp" 
+      <choosen-song v-show="showComp"
       :embedUrl="embedUrl" 
       :noVideoAlert="noVideoAlert"
       @exit="exitComp">
@@ -143,12 +144,27 @@ export default {
     font-family: 'Lexend Giga', sans-serif;
     letter-spacing: -2.3px;
   }
+  @mixin items-slide-in {
+     @keyframes slide-in {
+      0% { transform: translateX(-50px); opacity: 0 }
+      100% { transform: translateX(0px); opacity: 1 }
+    }
+    @for $i from 1 through 10 {
+      &:nth-child(#{$i}) {
+        animation: slide-in 1.5s #{300ms + ($i * 100ms)} forwards;
+      }
+    }
+  }
 
+  .fade-enter, .fade-leave-to,
+  .slide-in-leave-active, .slide-in-enter-active {
+    opacity: 0;
+  }
   .fade-enter-active, .fade-leave-active {
     transition: opacity .2s ease-in-out;
   }
-  .fade-enter, .fade-leave-to {
-    opacity: 0;
+  .slide-in-enter-active {
+    @include items-slide-in;
   }
 
   #app {
@@ -233,6 +249,7 @@ export default {
     transform: scale(.9);
   }
   .items__container {
+    position: relative;
     margin: 0 auto;
   }
   .items__song {
@@ -241,7 +258,6 @@ export default {
     background: rgba(255, 255, 255, .8);
     width: 950px;
     margin: 20px auto;
-    left: 45%;
     cursor: pointer;
     font-size: 20px;
     transition: background .3s,  border-bottom  .3s;
@@ -249,7 +265,6 @@ export default {
     align-items: center;
     grid-column: span 5 / auto;
     grid-template-columns: 140px 150px auto 50px 40px;
-    animation: fade-in 1s 0s forwards;
     &:hover {
       background: whitesmoke;
       border-bottom: 2px solid grey;
@@ -260,10 +275,6 @@ export default {
       align-self: start;
       box-shadow: 5px 5px 14px -6px rgba(0,0,0,0.85);
     }
-  }
-  @keyframes fade-in {
-    0% { transform: translateX(-50px); opacity: 0 }
-    100% { transform: translateX(0px); opacity: 1 }
   }
   .form__input {
     margin: 14vh 0 45px;
