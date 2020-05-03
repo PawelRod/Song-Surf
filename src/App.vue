@@ -145,7 +145,7 @@ export default {
     letter-spacing: -2.3px;
   }
   @mixin items-slide-in {
-     @keyframes slide-in {
+    @keyframes slide-in {
       0% { transform: translateX(-50px); opacity: 0 }
       100% { transform: translateX(0px); opacity: 1 }
     }
@@ -220,8 +220,8 @@ export default {
     position: absolute;
     letter-spacing: -5px;
     right: 15vw;
-    height: 200px;
-    line-height: 200px;
+    height: $defaultHeaderHeight;
+    line-height: $defaultHeaderHeight;
     margin: 0;
     font-size: 38px;
     transform: scale(1);
@@ -296,6 +296,9 @@ export default {
       text-transform: capitalize;
       text-align: center;
       margin: 5px 10px;
+    }
+    &::-ms-input-placeholder {
+      letter-spacing: 2px;
     }
     &:focus::placeholder {
       color: transparent;
