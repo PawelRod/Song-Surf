@@ -16,19 +16,39 @@
 export default {
   name: 'choosenSong',
   props: {
-    embedUrl: String,
-    noVideoAlert: Boolean
+    token: String,
+    songPath: String
   },
   data() {
     return {
-      item: [],
+      embedUrl: '',
+      noVideoAlert: false,
     }
   },
   methods: {
     exit: function() {
       this.$emit('exit', false);
+      this.embedUrl = '';
     }
   },
+  watch: {
+    songPath: function() {
+      this.noVideoAlert = false;
+      this.$http.get('http://api.genius.com' + this.songPath + '?access_token=' + this.token).then(function(data){
+      let str = data.body.response.song.media;
+      for(var i = 0; i < str.length; i++) {
+        if(str[i].url.charAt(11) == 'y') {
+          str = data.body.response.song.media[i].url;
+          break;
+        }
+      }
+      let res = str.split("=");
+      this.embedUrl = "https://www.youtube.com/embed/" + res[1] + "?autoplay=1";
+      }).catch(() => {
+        this.noVideoAlert = true;
+      });
+    }
+  }
 }
 </script>
 

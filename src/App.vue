@@ -29,8 +29,8 @@
     </div>
     <transition name="fade">
       <choosen-song v-show="showComp"
-      :embedUrl="embedUrl" 
-      :noVideoAlert="noVideoAlert"
+      :token="token"
+      :songPath="songPath"
       @exit="exitComp">
       </choosen-song>
     </transition>
@@ -59,8 +59,7 @@ export default {
       key: 1,
       showComp: false,
       token: 'e6BVaO8SJJ0-FYN8GAcyJUAZO3TCGsbQHzOl99-vfMfjkm57ppuPaqR61gImTbyB',
-      embedUrl: '',
-      noVideoAlert: false,
+      songPath: '',
       loading: false,
       quotes: quotes,
       randomNumber: Math.floor(Math.random() * 10),
@@ -93,25 +92,10 @@ export default {
     },
     chooseItem: function(item) {
       this.showComp = !this.showComp;
-      this.noVideoAlert = false;
-      this.$http.get('http://api.genius.com' + item.apiPath + '?access_token=' + this.token).then(function(data){
-        this.item = data;
-        let str = this.item.body.response.song.media;
-        for(var i = 0; i < str.length; i++) {
-          if(str[i].url.charAt(11) == 'y') {
-            str = this.item.body.response.song.media[i].url;
-            break;
-          }
-        }
-        let res = str.split("=");
-        this.embedUrl = "https://www.youtube.com/embed/" + res[1] + "?autoplay=1";
-      }).catch(() => {
-        this.noVideoAlert = true;
-      });
+      this.songPath = item.apiPath;
     },
     exitComp: function(value) {
       this.showComp = value;
-      this.embedUrl = '';
     }
   },
   created() {
@@ -151,7 +135,7 @@ export default {
     }
     @for $i from 1 through 10 {
       &:nth-child(#{$i}) {
-        animation: slide-in 1.5s #{300ms + ($i * 100ms)} forwards;
+        animation: slide-in 1s ease-out #{300ms + ($i * 100ms)} forwards;
       }
     }
   }
