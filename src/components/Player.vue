@@ -1,5 +1,10 @@
 <template>
   <section id="show-item">
+    <article v-for="(item, index) in items" :key="index++">
+      <h2>{{ item.description }}</h2>
+      <p>{{ item.releaseDate }}</p>
+      <p>{{ item.producers }}</p>
+    </article>
     <div class="video">
       <iframe width="420" height="315"
       :src="embedUrl"
@@ -14,7 +19,7 @@
 <script>
 
 export default {
-  name: 'choosenSong',
+  name: 'Player',
   props: {
     token: String,
     songPath: String
@@ -23,6 +28,7 @@ export default {
     return {
       embedUrl: '',
       noVideoAlert: false,
+      items: []
     }
   },
   methods: {
@@ -35,15 +41,22 @@ export default {
     songPath: function() {
       this.noVideoAlert = false;
       this.$http.get('http://api.genius.com' + this.songPath + '?access_token=' + this.token).then(function(data){
-      let str = data.body.response.song.media;
-      for(var i = 0; i < str.length; i++) {
-        if(str[i].url.charAt(11) == 'y') {
-          str = data.body.response.song.media[i].url;
-          break;
+        let str = data.body.response.song.media;
+        for(var i = 0; i < str.length; i++) {
+          if(str[i].url.charAt(11) == 'y') {
+            str = data.body.response.song.media[i].url;
+            break;
+          }
         }
-      }
-      let res = str.split("=");
-      this.embedUrl = "https://www.youtube.com/embed/" + res[1] + "?autoplay=1";
+        let res = str.split("=");
+        this.embedUrl = "https://www.youtube.com/embed/" + res[1] + "?autoplay=1";
+        this.items = data.body.response.song.map(function(song){
+          return {
+            description: song.title + ' by ' + song.primary_artist.name,
+            releaseDate: 'Release date: ' + song.release_date,
+            producers: 'Producer' + song.producer_artists[0].name
+          }
+        });
       }).catch(() => {
         this.noVideoAlert = true;
       });

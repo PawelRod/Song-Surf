@@ -28,11 +28,11 @@
       <p>- {{ quotes[randomNumber].author }}</p>
     </div>
     <transition name="fade">
-      <choosen-song v-show="showComp"
+      <player v-show="showComp"
       :token="token"
       :songPath="songPath"
       @exit="exitComp">
-      </choosen-song>
+      </player>
     </transition>
     <transition name="fade">
       <loading-comp v-if="loading"></loading-comp>
@@ -42,14 +42,14 @@
 
 <script>
 import debounce from 'debounce'
-import choosenSong from './components/choosenSong.vue'
+import Player from './components/Player.vue'
 import loadingComp from './components/loadingComp.vue'
 import quotes from './data/quotes.json'
 
 export default {
   name: 'App',
   components: {
-    'choosen-song': choosenSong,
+    'player': Player,
     'loading-comp': loadingComp
   },
   data() {
@@ -211,7 +211,7 @@ export default {
     transform: scale(1);
     font-weight: 800;
     text-shadow: 0 0 5px #FFF, 0 0 10px #FFF, 0 0 15px #FFF, 0 0 20px #FFF, 0 0 30px #FFF, 0 0 40px #FFF, 0 0 55px #FFF, 0 0 75px #FFF;
-    transition: transform .2s;
+    transition: transform .2s, right .2s;
   }
   header.header--thin, img.header__decoration-left--thin, img.header__logo--thin, div.header__decoration-right--thin {
     height: $defaultHeaderHeightThin;
