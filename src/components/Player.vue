@@ -12,7 +12,7 @@
       </iframe>
     </div>
     <p v-if="noVideoAlert">Sorry, video not available.</p>
-    <button aria-label="Close" @click="exit">X</button>
+    <button class="close-btn" aria-label="Close" @click="exit">X</button>
   </section>
 </template>
 
@@ -75,19 +75,22 @@ export default {
     height: 100%;
     background-color: rgba(255, 255, 255, .9);
   }
-  a {
+  .close-btn {
     position: absolute;
-    top: 50px;
-    right: 50px;
+    top: 20px;
+    right: 30px;
     font-size: 36px;
+    background: none;
+    border: 0;
     cursor: pointer;
   }
-  video::after {
-    position: absolute;
-    width: 420px; height: 315px;
-    top: 0;
-    left: 0;
-    background: pink;
+  .video {
+    iframe {
+      position: absolute;
+      left: 0;
+      width: 50%;
+      height: 50%;
+    }
   }
 </style>
 
