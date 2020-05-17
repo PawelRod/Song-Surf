@@ -1,16 +1,25 @@
 <template>
-  <section id="show-item">
-    <article v-for="(item, index) in items" :key="index++">
-      <h2>{{ item.description }}</h2>
-      <p>{{ item.releaseDate }}</p>
-      <p>{{ item.producers }}</p>
-    </article>
+  <section id="player">
     <div class="video">
       <iframe width="420" height="315"
       :src="embedUrl"
       frameborder="0" allowfullscreen allow="autoplay">
       </iframe>
     </div>
+    <article class="info">
+      <h2>{{ items.title }}</h2>
+      <h3>by {{ items.primary_artist.name }}</h3>
+      <h4>Release date</h4>
+      <span>{{ items.release_date_for_display }}</span>
+      <h4>Produced by</h4>
+      <span v-for="(producer, index) in items.producer_artists" :key="index++">
+        {{ producer.name }}
+      </span>
+      <h4>Written by</h4>
+      <span v-for="(writer, index) in items.writer_artists" :key="index++">
+        {{ writer.name }}
+      </span>
+    </article>
     <p v-if="noVideoAlert">Sorry, video not available.</p>
     <button class="close-btn" aria-label="Close" @click="exit">X</button>
   </section>
@@ -50,13 +59,8 @@ export default {
         }
         let res = str.split("=");
         this.embedUrl = "https://www.youtube.com/embed/" + res[1] + "?autoplay=1";
-        this.items = data.body.response.song.map(function(song){
-          return {
-            description: song.title + ' by ' + song.primary_artist.name,
-            releaseDate: 'Release date: ' + song.release_date,
-            producers: 'Producer' + song.producer_artists[0].name
-          }
-        });
+        console.log(data)
+        this.items = data.body.response.song;
       }).catch(() => {
         this.noVideoAlert = true;
       });
@@ -66,9 +70,10 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-  #show-item {
+  #player {
+    text-align: left;
     position: fixed;
-    color: white;
+    color: black;
     top: 0;
     left: 0;
     width: 100%;
@@ -85,12 +90,24 @@ export default {
     cursor: pointer;
   }
   .video {
+    position: relative;
+    left: 0;
+    width: 50%;
+    height: 50%;
     iframe {
-      position: absolute;
-      left: 0;
-      width: 50%;
-      height: 50%;
+      width: 100%;
+      height: 100%;
     }
+  }
+  .info {
+    width: 50%;
+    margin-left: 15px;
+  }
+  span {
+    margin-right: 7px;
+  }
+  h4 {
+    margin-bottom: 5px;
   }
 </style>
 
