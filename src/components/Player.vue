@@ -1,5 +1,5 @@
 <template>
-  <section id="player">
+  <section class="player" :class="{ 'player--mini': miniPlayer }">
     <div class="video">
       <iframe width="420" height="315"
       :src="embedUrl"
@@ -21,7 +21,8 @@
       </span>
     </article>
     <p v-if="noVideoAlert">Sorry, video not available.</p>
-    <button class="close-btn" aria-label="Close" @click="exit">X</button>
+    <button class="btn btn--close" aria-label="Close" @click="exit">X</button>
+    <button class="btn btn--minimize" @click="miniPlayer = !miniPlayer">_</button>
   </section>
 </template>
 
@@ -37,7 +38,8 @@ export default {
     return {
       embedUrl: '',
       noVideoAlert: false,
-      items: []
+      items: [],
+      miniPlayer: false
     }
   },
   methods: {
@@ -70,7 +72,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-  #player {
+  .player {
     text-align: left;
     position: fixed;
     color: black;
@@ -80,7 +82,12 @@ export default {
     height: 100%;
     background-color: rgba(255, 255, 255, .9);
   }
-  .close-btn {
+  .player--mini {
+    height: 120px;
+    top: auto;
+    bottom: 0;
+  }
+  .btn {
     position: absolute;
     top: 20px;
     right: 30px;
@@ -88,6 +95,12 @@ export default {
     background: none;
     border: 0;
     cursor: pointer;
+  }
+  .btn--close {
+    right: 30px;
+  }
+  .btn--minimize {
+    right: 90px;
   }
   .video {
     position: relative;
