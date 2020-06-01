@@ -10,6 +10,7 @@
   "dependencies": {
     "core-js": "^3.6.4",
     "debounce": "^1.2.0",
+    "genius-lyrics-api": "^2.0.3",
     "vue": "^2.6.11",
     "vue-resource": "^1.5.1",
     "vue-router": "^3.1.6"

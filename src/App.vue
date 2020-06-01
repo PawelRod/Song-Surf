@@ -104,7 +104,7 @@ export default {
   },
   updated() {
     this.inputToMiddle();
-  }
+  },
 }
 </script>
 
