@@ -1,34 +1,38 @@
 <template>
-  <section class="player" :class="{ 'player--mini': miniPlayer }">
-    <div class="video">
-      <iframe width="420" height="315"
-      :src="embedUrl"
-      frameborder="0" allowfullscreen allow="autoplay">
-      </iframe>
+  <div class="player" :class="{ 'player--mini': miniPlayer }">
+    <div class="player__column player__column--left">
+      <div class="player__video">
+        <iframe width="420" height="315"
+        :src="embedUrl"
+        frameborder="0" allowfullscreen allow="autoplay">
+        </iframe>
+      </div>
+      <section class="player__desc">
+        <h2>{{ items.title }}</h2>
+        <h3 v-if="embedUrl">by {{ items.primary_artist.name }}</h3>
+        <h4>Release date</h4>
+        <span>{{ items.release_date_for_display }}</span>
+        <h4>Produced by</h4>
+        <span v-for="(producer, index) in items.producer_artists" :key="index">
+          {{ producer.name }}
+        </span>
+        <h4>Written by</h4>
+        <span v-for="(writer, index) in items.writer_artists" :key="index + 2">
+          {{ writer.name }}
+        </span>
+      </section>
     </div>
-    <article class="info">
-      <h2>{{ items.title }}</h2>
-      <h3 v-if="embedUrl">by {{ items.primary_artist.name }}</h3>
-      <h4>Release date</h4>
-      <span>{{ items.release_date_for_display }}</span>
-      <h4>Produced by</h4>
-      <span v-for="(producer, index) in items.producer_artists" :key="index">
-        {{ producer.name }}
-      </span>
-      <h4>Written by</h4>
-      <span v-for="(writer, index) in items.writer_artists" :key="index + 2">
-        {{ writer.name }}
-      </span>
+    <article class="player__column player__column--right">
+      <p>{{ lyrics }}</p>
     </article>
     <p v-if="noVideoAlert">Sorry, video not available.</p>
-    <button class="btn btn--close" aria-label="Close" @click="exit">X</button>
-    <button class="btn btn--minimize" @click="miniPlayer = !miniPlayer">_</button>
-  </section>
+    <button class="player__btn player__btn--close" aria-label="Close" @click="exit">X</button>
+    <button class="player__btn player__btn--minimize" @click="miniPlayer = !miniPlayer">_</button>
+  </div>
 </template>
 
 <script>
 import { getLyrics } from 'genius-lyrics-api'
-// import { getSong } from 'genius-lyrics-api'
 
 export default {
   name: 'Player',
@@ -84,6 +88,10 @@ export default {
 
 <style lang="scss" scoped>
   .player {
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: row;
+    justify-content: flex-start;
     text-align: left;
     position: fixed;
     color: black;
@@ -99,7 +107,40 @@ export default {
     top: auto;
     bottom: 0;
   }
-  .btn {
+  .player__column {
+    height: 100%;
+    width: 50%;
+  }
+  .player__column--left {
+    order: 1;
+  }
+  .player__column--right {
+    order: 2;
+    overflow-y: scroll;
+    p {
+      margin: 15px 30px;
+      white-space: pre-line;
+    }
+  }
+  .player__video {
+    position: relative;
+    left: 0;
+    height: 50%;
+    iframe {
+      width: 100%;
+      height: 100%;
+    }
+  }
+  .player__desc {
+    margin-left: 15px;
+    span {
+      margin-right: 7px;
+    }
+    h4 {
+      margin-bottom: 5px;
+    }
+  }
+  .player__btn {
     position: absolute;
     top: 20px;
     right: 30px;
@@ -108,31 +149,11 @@ export default {
     border: 0;
     cursor: pointer;
   }
-  .btn--close {
+  .player__btn--close {
     right: 30px;
   }
-  .btn--minimize {
+  .player__btn--minimize {
     right: 90px;
-  }
-  .video {
-    position: relative;
-    left: 0;
-    width: 50%;
-    height: 50%;
-    iframe {
-      width: 100%;
-      height: 100%;
-    }
-  }
-  .info {
-    width: 50%;
-    margin-left: 15px;
-  }
-  span {
-    margin-right: 7px;
-  }
-  h4 {
-    margin-bottom: 5px;
   }
 </style>
 
