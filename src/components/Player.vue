@@ -2,6 +2,7 @@
   <div class="player" :class="{ 'player--mini': miniPlayer }">
     <div class="player__column player__column--left">
       <div class="player__video">
+        <span class="novid-alert" v-if="noVideoAlert">Sorry, video not available.</span>
         <iframe width="420" height="315"
         :src="embedUrl"
         frameborder="0" allowfullscreen allow="autoplay">
@@ -13,11 +14,11 @@
         <h4>Release date</h4>
         <span>{{ items.release_date_for_display }}</span>
         <h4>Produced by</h4>
-        <span v-for="(producer, index) in items.producer_artists" :key="index">
+        <span v-for="producer in items.producer_artists" :key="`${producer.id}++`">
           {{ producer.name }}
         </span>
         <h4>Written by</h4>
-        <span v-for="(writer, index) in items.writer_artists" :key="index + 2">
+        <span v-for="writer in items.writer_artists" :key="`${writer.id}--`">
           {{ writer.name }}
         </span>
       </section>
@@ -25,7 +26,6 @@
     <article class="player__column player__column--right">
       <p>{{ lyrics }}</p>
     </article>
-    <p v-if="noVideoAlert">Sorry, video not available.</p>
     <button class="player__btn player__btn--close" aria-label="Close" @click="exit">X</button>
     <button class="player__btn player__btn--minimize" @click="miniPlayer = !miniPlayer">_</button>
   </div>
@@ -60,15 +60,6 @@ export default {
       this.lyrics = '';
       this.noVideoAlert = false;
       this.$http.get('http://api.genius.com' + this.songPath + '?access_token=' + this.token).then(function(data){
-        let str = data.body.response.song.media;
-        for(var i = 0; i < str.length; i++) {
-          if(str[i].url.charAt(11) == 'y') {
-            str = data.body.response.song.media[i].url;
-            break;
-          }
-        }
-        let res = str.split("=");
-        this.embedUrl = "https://www.youtube.com/embed/" + res[1] + "?autoplay=1";
         console.log(data)
         this.items = data.body.response.song;
         const options = {
@@ -78,6 +69,15 @@ export default {
           optimizeQuery: true
         };
         getLyrics(options).then(lyrics => this.lyrics = lyrics);
+        let str = data.body.response.song.media;
+        for(var i = 0; i < str.length; i++) {
+          if(str[i].url.charAt(11) == 'y') {
+            str = data.body.response.song.media[i].url;
+            break;
+          }
+        }
+        let res = str.split("=");
+        this.embedUrl = "https://www.youtube.com/embed/" + res[1] + "?autoplay=1";
       }).catch(() => {
         this.noVideoAlert = true;
       });
@@ -130,6 +130,9 @@ export default {
       width: 100%;
       height: 100%;
     }
+    .novid-alert {
+      position: absolute;
+    }
   }
   .player__desc {
     margin-left: 15px;
@@ -156,4 +159,3 @@ export default {
     right: 90px;
   }
 </style>
-
