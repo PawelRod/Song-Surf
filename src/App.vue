@@ -1,56 +1,61 @@
 <template>
-  <div id="app">
-    <div class="background"></div>
-    <header class="header" :class="{ 'header--thin': inputIsFilled }">
-      <img class="header__decoration-left" :class="{ 'header__decoration-left--thin': inputIsFilled }" src="../public/logo-decoration.png" alt="Main logo" />
-      <img class="header__logo" :class="{ 'header__logo--thin': inputIsFilled }" src="../public/logo.png" alt="Left side logo decoration" />
-      <div class="header__decoration-right" :class="{ 'header__decoration-right--thin': inputIsFilled }" title="Right side logo decoration"></div>
-      <h1 class="header__text" :class="{ 'header__text--thin': inputIsFilled }">Large music database</h1>
-    </header>
-    <form class="form" method="get" v-on:submit.prevent>
-      <input class="form__input" :class="{ 'form__input--margin': inputIsFilled }"
-      v-model="search" @input="loadingThenShowItems" 
-      type="search" 
-      aria-label="Enter search text" 
-      placeholder="find artists, titles, albums and more..." 
-      spellcheck="false"
-      />
-      <transition-group tag="ul" name="slide-in" class="items__container">
-        <li v-show="!loading && search != ''" v-for="(item, index) in items" :key="index++" class="items__song" @click="chooseItem(item)">
-          <p>{{ index }}.</p>
-          <img :src="item.thumbnail" alt="Album cover" />
-          <p>{{ item.description }}</p>
-        </li>
-      </transition-group>
-    </form>
-    <div class="quotes" :class="{ 'quotes--fadeout': inputIsFilled }">
-      <p>{{ quotes[randomNumber].quote }}</p>
-      <p>- {{ quotes[randomNumber].author }}</p>
+  <simplebar :class="{'simplebar-overflow': showComp}" data-simplebar-auto-hide="true">
+    <div id="app">
+      <div class="background"></div>
+      <header class="header" :class="{ 'header--thin': inputIsFilled }">
+        <img class="header__decoration-left" :class="{ 'header__decoration-left--thin': inputIsFilled }" src="../public/logo-decoration.png" alt="Main logo" />
+        <img class="header__logo" :class="{ 'header__logo--thin': inputIsFilled }" src="../public/logo.png" alt="Left side logo decoration" />
+        <div class="header__decoration-right" :class="{ 'header__decoration-right--thin': inputIsFilled }" title="Right side logo decoration"></div>
+        <h1 class="header__text" :class="{ 'header__text--thin': inputIsFilled }">Large music database</h1>
+      </header>
+      <form class="form" method="get" v-on:submit.prevent>
+        <input class="form__input" :class="{ 'form__input--margin': inputIsFilled }"
+        v-model="search" @input="loadingThenShowItems" 
+        type="search" 
+        aria-label="Enter search text" 
+        placeholder="find artists, titles, albums and more..." 
+        spellcheck="false"
+        />
+        <transition-group tag="ul" name="slide-in" class="items__container">
+          <li v-show="!loading && search != ''" v-for="(item, index) in items" :key="index++" class="items__song" @click="chooseItem(item)">
+            <p>{{ index }}.</p>
+            <img :src="item.thumbnail" alt="Album cover" />
+            <p>{{ item.description }}</p>
+          </li>
+        </transition-group>
+      </form>
+      <div class="quotes" :class="{ 'quotes--fadeout': inputIsFilled }">
+        <p>{{ quotes[randomNumber].quote }}</p>
+        <p>- {{ quotes[randomNumber].author }}</p>
+      </div>
+      <transition name="fade">
+        <player v-show="showComp"
+        :token="token"
+        :songPath="songPath"
+        @exit="exitComp">
+        </player>
+      </transition>
+      <transition name="fade">
+        <loading-comp v-if="loading"></loading-comp>
+      </transition>
     </div>
-    <transition name="fade">
-      <player v-show="showComp"
-      :token="token"
-      :songPath="songPath"
-      @exit="exitComp">
-      </player>
-    </transition>
-    <transition name="fade">
-      <loading-comp v-if="loading"></loading-comp>
-    </transition>
-  </div>
+  </simplebar>
 </template>
 
 <script>
-import debounce from 'debounce'
-import Player from './components/Player.vue'
-import loadingComp from './components/loadingComp.vue'
-import quotes from './data/quotes.json'
+import debounce from 'debounce';
+import Player from './components/Player.vue';
+import loadingComp from './components/loadingComp.vue';
+import quotes from './data/quotes.json';
+import simplebar from 'simplebar-vue';
+import 'simplebar/dist/simplebar.min.css';
 
 export default {
   name: 'App',
   components: {
     'player': Player,
-    'loading-comp': loadingComp
+    'loading-comp': loadingComp,
+    'simplebar': simplebar
   },
   data() {
     return {
@@ -110,19 +115,7 @@ export default {
 
 <style lang="scss">
   @import url('https://fonts.googleapis.com/css?family=Lexend+Giga&display=swap');
-
-  $defaultColor: #00bed7;
-  $defaultBg: #dff5fd;
-
-  $defaultHeaderHeight: 200px;
-  $headerLeftWidth: 100px;
-  $headerLogoWidth: 375px;
-  $headerRightWidth: calc(#{$headerLogoWidth} + #{$headerLeftWidth});
-
-  $defaultHeaderHeightThin: calc(#{$defaultHeaderHeight} - 50px);
-  $headerLeftWidthThin: calc(#{$headerLeftWidth} - 30px);
-  $headerLogoWidthThin: 375px;
-  $headerRightWidthThin: calc(#{$headerLogoWidth} + #{$headerLeftWidth});
+  @import 'data/scss/_variables.scss';
 
   @mixin font {
     font-family: 'Lexend Giga', sans-serif;
@@ -149,6 +142,14 @@ export default {
   }
   .slide-in-enter-active {
     @include items-slide-in;
+  }
+
+  [data-simplebar] {
+    overflow-x: hidden;
+    height: 100%;
+  }
+  .simplebar-overflow {
+    overflow: hidden;
   }
 
   #app {

@@ -1,0 +1,12 @@
+$defaultColor: #00bed7;
+$defaultBg: #dff5fd;
+
+$defaultHeaderHeight: 200px;
+$headerLeftWidth: 100px;
+$headerLogoWidth: 375px;
+$headerRightWidth: calc(#{$headerLogoWidth} + #{$headerLeftWidth});
+
+$defaultHeaderHeightThin: calc(#{$defaultHeaderHeight} - 50px);
+$headerLeftWidthThin: calc(#{$headerLeftWidth} - 30px);
+$headerLogoWidthThin: 375px;
+$headerRightWidthThin: calc(#{$headerLogoWidth} + #{$headerLeftWidth});

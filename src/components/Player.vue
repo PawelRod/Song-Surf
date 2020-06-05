@@ -23,9 +23,11 @@
         </span>
       </section>
     </div>
-    <article class="player__column player__column--right">
-      <p>{{ lyrics }}</p>
-    </article>
+      <article class="player__column player__column--right">
+        <simplebar data-simplebar-auto-hide="false">
+          <p>{{ lyrics }}</p>
+        </simplebar>
+      </article>
     <button class="player__btn player__btn--close" aria-label="Close" @click="exit">X</button>
     <button class="player__btn player__btn--minimize" @click="miniPlayer = !miniPlayer">_</button>
   </div>
@@ -33,8 +35,13 @@
 
 <script>
 import { getLyrics } from 'genius-lyrics-api'
+import simplebar from 'simplebar-vue';
+import 'simplebar/dist/simplebar.min.css';
 
 export default {
+  components: {
+    'simplebar': simplebar
+  },
   name: 'Player',
   props: {
     token: String,
@@ -87,6 +94,12 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+  @import '../data/scss/_variables.scss';
+
+  [data-simplebar] {
+    overflow-x: hidden;
+    height: 100%;
+  }
   .player {
     display: flex;
     flex-wrap: wrap;
@@ -116,7 +129,6 @@ export default {
   }
   .player__column--right {
     order: 2;
-    overflow-y: scroll;
     p {
       margin: 15px 30px;
       white-space: pre-line;
