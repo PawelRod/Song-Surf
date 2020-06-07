@@ -31,6 +31,7 @@
         top: 0;
         bottom: 0;
         background-color: rgba(255, 255, 255, .8);
+        z-index: 2;
     }
     .loading__box {
         height: 30px;

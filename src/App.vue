@@ -1,5 +1,5 @@
 <template>
-  <simplebar :class="{'simplebar-overflow': showComp}" data-simplebar-auto-hide="true">
+  <simplebar :class="{'simplebar-overflow': hideSimplebar}" data-simplebar-auto-hide="true">
     <div id="app">
       <div class="background"></div>
       <header class="header" :class="{ 'header--thin': inputIsFilled }">
@@ -32,7 +32,7 @@
         <player v-show="showComp"
         :token="token"
         :songPath="songPath"
-        @exit="exitComp">
+        @exit="exitComp" @minimize="minimizeComp">
         </player>
       </transition>
       <transition name="fade">
@@ -63,6 +63,7 @@ export default {
       items: [],
       key: 1,
       showComp: false,
+      hideSimplebar: false,
       token: 'e6BVaO8SJJ0-FYN8GAcyJUAZO3TCGsbQHzOl99-vfMfjkm57ppuPaqR61gImTbyB',
       songPath: '',
       loading: false,
@@ -97,10 +98,15 @@ export default {
     },
     chooseItem: function(item) {
       this.showComp = !this.showComp;
+      this.hideSimplebar = !this.hideSimplebar;
       this.songPath = item.apiPath;
     },
     exitComp: function(value) {
       this.showComp = value;
+      this.hideSimplebar = value;
+    },
+    minimizeComp: function(value) {
+      this.hideSimplebar = value;
     }
   },
   created() {
@@ -148,6 +154,9 @@ export default {
     overflow-x: hidden;
     height: 100%;
   }
+  .simplebar-content {
+    height: 100%;
+  }
   .simplebar-overflow {
     overflow: hidden;
   }
@@ -155,8 +164,7 @@ export default {
   #app {
     @include font;
     position: relative;
-    min-height: 100%;
-    height: auto;
+    height: 100%;
     text-align: center;
   }
   .background {
@@ -260,6 +268,9 @@ export default {
       align-self: start;
       box-shadow: 5px 5px 14px -6px rgba(0,0,0,0.85);
     }
+  }
+  .form {
+    margin-bottom: 160px;
   }
   .form__input {
     margin: 14vh 0 45px;

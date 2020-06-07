@@ -1,9 +1,9 @@
 <template>
   <div class="player" :class="{ 'player--mini': miniPlayer }">
-    <div class="player__column player__column--left">
+    <div class="player__column player__column--left" v-if="!loading">
       <div class="player__video">
         <span class="novid-alert" v-if="noVideoAlert">Sorry, video not available.</span>
-        <iframe width="420" height="315"
+        <iframe ref="video" width="420" height="315"
         :src="embedUrl"
         frameborder="0" allowfullscreen allow="autoplay">
         </iframe>
@@ -24,22 +24,27 @@
       </section>
     </div>
       <article class="player__column player__column--right">
-        <simplebar data-simplebar-auto-hide="false">
+        <transition name="fade">
+          <loading-comp v-if="loading"></loading-comp>
+        </transition>
+        <simplebar data-simplebar-auto-hide="false" :class="{'simplebar-overflow': miniPlayer}">
           <p>{{ lyrics }}</p>
         </simplebar>
       </article>
     <button class="player__btn player__btn--close" aria-label="Close" @click="exit">X</button>
-    <button class="player__btn player__btn--minimize" @click="miniPlayer = !miniPlayer">_</button>
+    <button class="player__btn player__btn--minimize" @click="minimize">_</button>
   </div>
 </template>
 
 <script>
+import loadingComp from './loadingComp.vue';
 import { getLyrics } from 'genius-lyrics-api'
 import simplebar from 'simplebar-vue';
 import 'simplebar/dist/simplebar.min.css';
 
 export default {
   components: {
+    'loading-comp': loadingComp,
     'simplebar': simplebar
   },
   name: 'Player',
@@ -49,10 +54,11 @@ export default {
   },
   data() {
     return {
-      embedUrl: '',
       noVideoAlert: false,
-      items: [],
       miniPlayer: false,
+      loading: false,
+      items: [],
+      embedUrl: '',
       lyrics: ''
     }
   },
@@ -60,10 +66,15 @@ export default {
     exit: function() {
       this.$emit('exit', false);
       this.embedUrl = '';
+    },
+    minimize: function() {
+      this.miniPlayer = !this.miniPlayer;
+      this.$emit('minimize', !this.miniPlayer);
     }
   },
   watch: {
     songPath: function() {
+      this.loading = true;
       this.lyrics = '';
       this.noVideoAlert = false;
       this.$http.get('http://api.genius.com' + this.songPath + '?access_token=' + this.token).then(function(data){
@@ -75,7 +86,10 @@ export default {
           artist: this.items.primary_artist.name,
           optimizeQuery: true
         };
-        getLyrics(options).then(lyrics => this.lyrics = lyrics);
+        getLyrics(options).then(lyrics => {
+          this.lyrics = lyrics;
+          this.loading = false;
+        });
         let str = data.body.response.song.media;
         for(var i = 0; i < str.length; i++) {
           if(str[i].url.charAt(11) == 'y') {
@@ -96,10 +110,6 @@ export default {
 <style lang="scss" scoped>
   @import '../data/scss/_variables.scss';
 
-  [data-simplebar] {
-    overflow-x: hidden;
-    height: 100%;
-  }
   .player {
     display: flex;
     flex-wrap: wrap;
@@ -116,9 +126,17 @@ export default {
   }
   .player--mini {
     height: 120px;
-    width: calc(100% - 16px);
+    width: 100%;
     top: auto;
     bottom: 0;
+  }
+  .player--mini:after {
+    content: '';
+    width: 99%;
+    height: 2px;
+    background: black;
+    margin: 0 auto;
+    box-shadow: inset 12px 0 15px -4px white, inset -12px 0 8px -4px white;
   }
   .player__column {
     height: 100%;
@@ -130,7 +148,7 @@ export default {
   .player__column--right {
     order: 2;
     p {
-      margin: 15px 30px;
+      padding: 15px 30px;
       white-space: pre-line;
     }
   }
