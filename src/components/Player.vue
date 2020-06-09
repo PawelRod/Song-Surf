@@ -2,28 +2,51 @@
   <div class="player" :class="{ 'player--mini': miniPlayer }">
     <div class="player__column player__column--left" v-if="!loading">
       <div class="player__video">
-        <span class="novid-alert" v-if="noVideoAlert">Sorry, video not available.</span>
-        <iframe ref="video" width="420" height="315"
+        <span class="novid-alert" v-show="!miniPlayer" v-if="noVideoAlert">Sorry, video not available.</span>
+        <iframe v-show="!miniPlayer"
+        ref="video" width="420" height="315"
         :src="embedUrl"
         frameborder="0" allowfullscreen allow="autoplay">
         </iframe>
+        <div class="controls">
+          <div class="controls__duration"></div>
+          <div class="controls__btns">
+            <button>
+              <svg xmlns="http://www.w3.org/2000/svg" height="45" width="45" viewBox="0 0 24 24"><path d="M0 0h24v24H0z" fill="none"/>
+                <path d="M6 6h12v12H6z"/>
+              </svg>
+            </button>
+            <button>
+              <svg xmlns="http://www.w3.org/2000/svg" height="40" width="40" viewBox="0 0 24 24"><path d="M0 0h24v24H0z" fill="none"/>
+                <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/>
+              </svg>
+            </button>
+            <button>
+              <svg xmlns="http://www.w3.org/2000/svg" height="40" width="40" viewBox="0 0 24 24"><path d="M0 0h24v24H0z" fill="none"/>
+                <path d="M8 5v14l11-7z"/>
+              </svg>
+            </button>
+          </div>
+        </div>
       </div>
       <section class="player__desc">
         <h2>{{ items.title }}</h2>
         <h3 v-if="embedUrl">by {{ items.primary_artist.name }}</h3>
-        <h4>Release date</h4>
-        <span>{{ items.release_date_for_display }}</span>
-        <h4>Produced by</h4>
-        <span v-for="producer in items.producer_artists" :key="`${producer.id}++`">
-          {{ producer.name }}
-        </span>
-        <h4>Written by</h4>
-        <span v-for="writer in items.writer_artists" :key="`${writer.id}--`">
-          {{ writer.name }}
-        </span>
+        <div v-show="!miniPlayer">
+          <h4>Release date</h4>
+          <span>{{ items.release_date_for_display }}</span>
+          <h4>Produced by</h4>
+          <span v-for="producer in items.producer_artists" :key="`${producer.id}++`">
+            {{ producer.name }}
+          </span>
+          <h4>Written by</h4>
+          <span v-for="writer in items.writer_artists" :key="`${writer.id}--`">
+            {{ writer.name }}
+          </span>
+        </div>
       </section>
     </div>
-      <article class="player__column player__column--right">
+      <article class="player__column player__column--right" v-show="!miniPlayer">
         <transition name="fade">
           <loading-comp v-if="loading"></loading-comp>
         </transition>
@@ -129,6 +152,26 @@ export default {
     width: 100%;
     top: auto;
     bottom: 0;
+    .player__column {
+      width: 100%;
+      h2, h3 {
+        display: inline-block;
+        margin: 0 10px;
+        font-size: 1.5em;
+      }
+    }
+    .player__video {
+      width: 100%;
+      .controls__duration {
+        margin: 8px 105px;
+      }
+    }
+    .player__desc {
+      height: 50px;
+      width: 100%;
+      text-align: center;
+      margin: 0 10px 10px;
+    }
   }
   .player--mini:after {
     content: '';
@@ -144,6 +187,9 @@ export default {
   }
   .player__column--left {
     order: 1;
+    h2 {
+      margin-top: 0;
+    }
   }
   .player__column--right {
     order: 2;
@@ -155,13 +201,28 @@ export default {
   .player__video {
     position: relative;
     left: 0;
-    height: 50%;
+    height: 55%;
     iframe {
       width: 100%;
-      height: 100%;
+      height: calc(100% - 80px);
     }
     .novid-alert {
       position: absolute;
+    }
+  }
+  .controls__duration {
+    width: auto;
+    height: 7px;
+    border-radius: 10px;
+    background: grey;
+    margin: 8px 15px;
+  }
+  .controls__btns {
+    display: flex;
+    justify-content: center;
+    button {
+      background: transparent;
+      border: 0;
     }
   }
   .player__desc {
