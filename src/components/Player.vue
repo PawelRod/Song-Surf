@@ -3,11 +3,7 @@
     <div class="player__column player__column--left" v-if="!loading">
       <div class="player__video">
         <span class="novid-alert" v-show="!miniPlayer" v-if="noVideoAlert">Sorry, video not available.</span>
-        <iframe v-show="!miniPlayer"
-        ref="video" width="420" height="315"
-        :src="embedUrl"
-        frameborder="0" allowfullscreen allow="autoplay">
-        </iframe>
+        <youtube :video-id="embedUrl" ref="youtube" v-show="!miniPlayer" style="width: 100%; height: calc(100% - 80px)"></youtube>
         <div class="controls">
           <div class="controls__duration"></div>
           <div class="controls__btns">
@@ -16,12 +12,12 @@
                 <path d="M6 6h12v12H6z"/>
               </svg>
             </button>
-            <button>
+            <button @click="pauseVideo">
               <svg xmlns="http://www.w3.org/2000/svg" height="40" width="40" viewBox="0 0 24 24"><path d="M0 0h24v24H0z" fill="none"/>
                 <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/>
               </svg>
             </button>
-            <button>
+            <button @click="playVideo">
               <svg xmlns="http://www.w3.org/2000/svg" height="40" width="40" viewBox="0 0 24 24"><path d="M0 0h24v24H0z" fill="none"/>
                 <path d="M8 5v14l11-7z"/>
               </svg>
@@ -93,6 +89,17 @@ export default {
     minimize: function() {
       this.miniPlayer = !this.miniPlayer;
       this.$emit('minimize', !this.miniPlayer);
+    },
+    playVideo() {
+      this.player.playVideo();
+    },
+    pauseVideo() {
+      this.player.pauseVideo();
+    },
+  },
+  computed: {
+    player() {
+      return this.$refs.youtube.player
     }
   },
   watch: {
@@ -121,12 +128,12 @@ export default {
           }
         }
         let res = str.split("=");
-        this.embedUrl = "https://www.youtube.com/embed/" + res[1] + "?autoplay=1";
+        this.embedUrl = res[1];
       }).catch(() => {
         this.noVideoAlert = true;
       });
     }
-  }
+  },
 }
 </script>
 
@@ -202,10 +209,6 @@ export default {
     position: relative;
     left: 0;
     height: 55%;
-    iframe {
-      width: 100%;
-      height: calc(100% - 80px);
-    }
     .novid-alert {
       position: absolute;
     }
