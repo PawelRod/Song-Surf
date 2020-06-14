@@ -4,7 +4,7 @@
       <div class="background"></div>
       <header class="header" :class="{ 'header--thin': inputIsFilled }">
         <img class="header__decoration-left" :class="{ 'header__decoration-left--thin': inputIsFilled }" src="../public/logo-decoration.png" alt="Main logo" />
-        <img class="header__logo" :class="{ 'header__logo--thin': inputIsFilled }" src="../public/logo.png" alt="Left side logo decoration" />
+        <a href="."><img class="header__logo" :class="{ 'header__logo--thin': inputIsFilled }" src="../public/logo.png" alt="Left side logo decoration" /></a>
         <div class="header__decoration-right" :class="{ 'header__decoration-right--thin': inputIsFilled }" title="Right side logo decoration"></div>
         <h1 class="header__text" :class="{ 'header__text--thin': inputIsFilled }">Large music database</h1>
       </header>
@@ -69,20 +69,20 @@ export default {
       loading: false,
       quotes: quotes,
       randomNumber: Math.floor(Math.random() * 10),
-      inputIsFilled: false
+      inputIsFilled: false,
     }
   },
   methods: {
-    inputToMiddle: function() {
+    inputToMiddle() {
       if (this.search == "") {
           this.inputIsFilled = false;
       }
     },
-    loadingThenShowItems: function() {
+    loadingThenShowItems() {
         this.loading = true;
         this.showItems();
     },
-    showItems: function() {
+    showItems() {
       this.$http.get('http://api.genius.com/search?access_token=' + this.token + '&q=' + this.search).then(function(data){
         this.loading = false;
         this.inputIsFilled = true;
@@ -96,16 +96,16 @@ export default {
         });
       })
     },
-    chooseItem: function(item) {
+    chooseItem(item) {
       this.showComp = !this.showComp;
       this.hideSimplebar = !this.hideSimplebar;
       this.songPath = item.apiPath;
     },
-    exitComp: function(value) {
+    exitComp(value) {
       this.showComp = value;
       this.hideSimplebar = value;
     },
-    minimizeComp: function(value) {
+    minimizeComp(value) {
       this.hideSimplebar = value;
     }
   },

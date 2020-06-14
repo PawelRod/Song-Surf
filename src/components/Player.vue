@@ -1,13 +1,13 @@
 <template>
   <div class="player" :class="{ 'player--mini': miniPlayer }">
-    <div class="player__column player__column--left" v-if="!loading">
+    <div class="player__column player__column--left" v-show="!loading">
       <div class="player__video">
         <span class="novid-alert" v-show="!miniPlayer" v-if="noVideoAlert">Sorry, video not available.</span>
-        <youtube :video-id="embedUrl" ref="youtube" v-show="!miniPlayer" style="width: 100%; height: calc(100% - 80px)"></youtube>
+        <youtube :video-id="embedUrl" :player-vars="playerVars" ref="youtube" style="width: 100%; height: calc(100% - 80px)"></youtube>
         <div class="controls">
           <div class="controls__duration"></div>
           <div class="controls__btns">
-            <button>
+            <button @click="stopVideo">
               <svg xmlns="http://www.w3.org/2000/svg" height="45" width="45" viewBox="0 0 24 24"><path d="M0 0h24v24H0z" fill="none"/>
                 <path d="M6 6h12v12H6z"/>
               </svg>
@@ -73,6 +73,16 @@ export default {
   },
   data() {
     return {
+      playerVars: {
+        autoplay: 1,
+         controls: 0,
+         modestbranding: 1,
+         showinfo: 0,
+         wmode: 'opaque',
+         enablejsapi: 1 ,
+         origin: window.location.origin,
+         rel: 0
+      },
       noVideoAlert: false,
       miniPlayer: false,
       loading: false,
@@ -81,34 +91,47 @@ export default {
       lyrics: ''
     }
   },
+  computed: {
+    player() {
+      return this.$refs.youtube.player
+    },
+  },
   methods: {
-    exit: function() {
-      this.$emit('exit', false);
-      this.embedUrl = '';
-    },
-    minimize: function() {
-      this.miniPlayer = !this.miniPlayer;
-      this.$emit('minimize', !this.miniPlayer);
-    },
     playVideo() {
       this.player.playVideo();
     },
     pauseVideo() {
       this.player.pauseVideo();
     },
-  },
-  computed: {
-    player() {
-      return this.$refs.youtube.player
-    }
+    stopVideo() {
+      this.player.stopVideo();
+    },
+    exit() {
+      this.$emit('exit', false);
+      this.embedUrl = '';
+    },
+    minimize() {
+      this.miniPlayer = !this.miniPlayer;
+      this.$emit('minimize', !this.miniPlayer);
+    },
+    formatTime(time){
+      time = Math.round(time);
+
+      var minutes = Math.floor(time / 60),
+      seconds = time - minutes * 60;
+
+      seconds = seconds < 10 ? '0' + seconds : seconds;
+
+      return minutes + ":" + seconds;
+    },
   },
   watch: {
-    songPath: function() {
+    songPath() {
+      this.$forceUpdate();
       this.loading = true;
       this.lyrics = '';
       this.noVideoAlert = false;
       this.$http.get('http://api.genius.com' + this.songPath + '?access_token=' + this.token).then(function(data){
-        console.log(data)
         this.items = data.body.response.song;
         const options = {
           apiKey: this.token,
